@@ -20,6 +20,7 @@ from cogent.base.config import (
 
 # --- Custom Config Classes for Extensibility ---
 
+
 @toml_config("agent")
 class AgentConfig(BaseConfig):
     agent_type: str = "assistant"
@@ -42,6 +43,7 @@ class AgentConfig(BaseConfig):
             temperature=agent_section.get("temperature", cls().temperature),
         )
 
+
 @toml_config("workflow")
 class WorkflowConfig(BaseConfig):
     workflow_name: str = "default"
@@ -62,7 +64,9 @@ class WorkflowConfig(BaseConfig):
             timeout=workflow_section.get("timeout", cls().timeout),
         )
 
+
 # --- Extensible Cogent Config Example ---
+
 
 class CogentAgentConfig(CogentBaseConfig):
     def _load_default_configs(self):
@@ -70,7 +74,9 @@ class CogentAgentConfig(CogentBaseConfig):
         self.register_config("agent", AgentConfig())
         self.register_config("workflow", WorkflowConfig())
 
+
 # --- Main Test Class ---
+
 
 class TestExtensibility(unittest.TestCase):
     """Test configuration extensibility and config loading order."""
@@ -147,6 +153,7 @@ class TestExtensibility(unittest.TestCase):
         class DatabaseConfig(BaseConfig):
             connection_string: str = "sqlite:///default.db"
             pool_size: int = 5
+
         cogent_config = get_cogent_config()
         cogent_config.register_config("agent", AgentConfig())
         cogent_config.register_config("workflow", WorkflowConfig())
@@ -230,10 +237,12 @@ class TestExtensibility(unittest.TestCase):
     def test_cogent_agent_config_register_config(self, mock_load_toml):
         mock_load_toml.return_value = {}
         config = CogentAgentConfig()
+
         @toml_config("database")
         class DatabaseConfig(BaseConfig):
             connection_string: str = "sqlite:///default.db"
             pool_size: int = 5
+
         database_config = DatabaseConfig()
         config.register_config("database", database_config)
         retrieved_db = config.get_config("database")
@@ -300,14 +309,17 @@ class TestExtensibility(unittest.TestCase):
     def test_cogent_agent_config_multiple_custom_configs(self, mock_load_toml):
         mock_load_toml.return_value = {}
         config = CogentAgentConfig()
+
         @toml_config("monitoring")
         class MonitoringConfig(BaseConfig):
             log_level: str = "INFO"
             metrics_enabled: bool = True
+
         @toml_config("security")
         class SecurityConfig(BaseConfig):
             encryption_enabled: bool = True
             key_rotation_days: int = 30
+
         config.register_config("monitoring", MonitoringConfig())
         config.register_config("security", SecurityConfig())
         all_configs = config.get_all_configs()
@@ -388,6 +400,7 @@ dimensions = 1234
     @pytest.mark.unit
     def test_class_defaults_vs_package_defaults(self):
         from cogent.base.config.core import LLMConfig
+
         llm_config = LLMConfig()
         self.assertEqual(llm_config.completion_model, "openai_gpt4-1-mini")
         self.assertEqual(llm_config.embedding_dimensions, 768)
