@@ -3,8 +3,6 @@ Cogent configuration module.
 Provides extensible configuration management for agentic cognitive computing frameworks.
 """
 
-__version__ = "0.1.4"
-
 from .base import BaseConfig, toml_config
 from .core import (
     LLMConfig,
