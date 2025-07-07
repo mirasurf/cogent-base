@@ -1,6 +1,6 @@
 # Cogent Base
 
-[![PyPI version](https://img.shields.io/pypi/pyversions/cogent-base.svg)](https://pypi.python.org/pypi/cogent-base)
+[![PyPI version](https://img.shields.io/pypi/v/cogent-base)](https://pypi.python.org/pypi/cogent-base)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://github.com/mirasurf/cogent-base/actions/workflows/ci.yml/badge.svg)](https://github.com/mirasurf/cogent-base/actions/workflows/ci.yml)
 
