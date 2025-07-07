@@ -1,6 +1,6 @@
 [project]
 name = "cogent-base"
-version = "0.0.1"
+version = "0.1.1"
 description = "Base and shared modules for cogents"
 authors = [
     { name = "xmingc", email = "chenxm35@gmail.com" }
