@@ -6,34 +6,34 @@ authors = [
     { name = "xmingc", email = "chenxm35@gmail.com" }
 ]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 dependencies = [
     "python-dotenv>=1.0.1",
-    "pydantic>=2.6.1",
-    "litellm>=1.73.0",
-    "ollama>=0.4.0",
+    "pydantic>=2.8.0",
+    "litellm>=1.74.0",
+    "ollama>=0.5.0",
     "numpy<2.0.0",
     "FlagEmbedding>=1.2.0",
-    "unstructured>=0.17.2",
+    "unstructured>=0.18.0",
     "filetype>=1.2.0",
     "tomli>=2.0.0",
-    "opencv-python>=4.8.0",
+    "opencv-python>=4.9.0",
     "assemblyai>=0.21.0",
-    "weaviate-client>=4.4.0",
-    "instructor>=1.7.0",
+    "weaviate-client>=4.15.0",
+    "instructor>=1.9.0",
 ]
 
 [project.optional-dependencies]
 # Development dependencies
 dev = [
-    "pytest>=7.4.0",
-    "pytest-asyncio>=0.21.0",
-    "pytest-mock>=3.10.0",
-    "pytest-cov>=4.1.0",
-    "httpx>=0.24.0",
-    "black>=23.0.0",
-    "isort>=5.12.0",
-    "flake8>=6.0.0",
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-mock>=3.14.0",
+    "pytest-cov>=6.0.0",
+    "httpx>=0.28.0",
+    "black>=25.0.0",
+    "isort>=6.0.0",
+    "flake8>=7.0.0",
     "autoflake>=2.3.1",
 ]
 
@@ -64,7 +64,7 @@ asyncio_mode = "auto"
 
 [tool.black]
 line-length = 120
-target-version = ['py310']
+target-version = ['py39']
 include = '\.pyi?$'
 
 [tool.isort]
