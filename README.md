@@ -45,9 +45,9 @@ llm_config = config.llm
 vector_store_config = config.vector_store
 ```
 
-### Extending CogentBaseConfig
+### Extending Configuration
 
-Create a custom configuration class that extends `CogentBaseConfig`:
+Create custom configuration classes and extend `CogentBaseConfig`:
 
 ```python
 from cogent.base.config import CogentBaseConfig, BaseConfig, toml_config
@@ -75,51 +75,25 @@ agent_config = config.get_config("agent")
 
 ### Configuration Loading Order
 
-Cogent's configuration system is **layered and extensible**:
+Cogent's configuration system follows a **layered precedence**:
 
-1. **Class Defaults**:  
-   Each config class (e.g., `LLMConfig`) defines Python default values.  
-   _Example_:  
-   ```python
-   class LLMConfig(BaseConfig):
-       completion_model: str = "openai_gpt4-1-mini"
-   ```
-2. **Package Default TOML**:  
-   The package ships with a built-in `base.toml` (inside the Python package).  
-   This file provides default values for all config sections and will override class defaults if present.
-3. **User Runtime TOML**:  
-   If a `base.toml` is present in the current working directory at runtime, it will override both the package TOML and class defaults.  
-   _This is the recommended way for downstream users to customize configuration without modifying package code._
+1. **Class Defaults**: Python default values defined in config classes
+2. **Package TOML**: Built-in `base.toml` shipped with the package
+3. **User Runtime TOML**: Optional `base.toml` in the current working directory
 
-**Precedence:**  
-_User TOML_ > _Package TOML_ > _Class Defaults_
+**Precedence:** _User TOML_ > _Package TOML_ > _Class Defaults_
 
 #### Example
 
-Suppose your package TOML contains:
 ```toml
+# Package base.toml (shipped with cogent-base)
 [completion]
 model = "ollama_qwen_vision"
-```
-and your class default is `"openai_gpt4-1-mini"`.  
-If a user creates a `base.toml` in their project:
-```toml
+
+# User base.toml (in project directory) - overrides package default
 [completion]
 model = "my_custom_model"
 ```
-then `config.llm.completion_model` will be `"my_custom_model"` at runtime.
-
-### Extending Configuration
-
-You can add your own config sections by subclassing `CogentBaseConfig` and registering new config classes.  
-See the extensibility section above for a code example.
-
-### Testing
-
-The test suite verifies:
-- User TOML overrides package TOML and class defaults
-- Package TOML overrides class defaults
-- Class defaults are used if no TOML value is set
 
 ### Core Configuration Classes
 
