@@ -2,6 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/cogent-base.svg)](https://badge.fury.io/py/cogent-base)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/mirasurf/cogent-base/actions/workflows/ci.yml/badge.svg)](https://github.com/mirasurf/cogent-base/actions/workflows/ci.yml)
 
 A shared Python module for agentic cognitive computing frameworks, providing extensible configuration management, logging utilities, and core components.
 

@@ -4,9 +4,10 @@ Provides TOML loading and helper functions for configuration management.
 """
 
 import copy
-import tomli
 from pathlib import Path
 from typing import Any, Dict, List, Mapping
+
+import tomli
 
 
 def load_toml_config(toml_path: Path) -> Dict[str, Any]:
