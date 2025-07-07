@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 import pytest
 
-from cogent.base.config import (
+from cogentbase.config import (
     BaseConfig,
     CogentBaseConfig,
     get_cogent_config,
@@ -110,7 +110,7 @@ class TestExtensibility(unittest.TestCase):
         self.assertEqual(config.temperature, 0.5)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_toml_config")
+    @patch("cogentbase.config.main.load_toml_config")
     def test_register_custom_config_with_cogent(self, mock_load_toml):
         mock_load_toml.return_value = {}
         cogent_config = CogentBaseConfig()
@@ -125,7 +125,7 @@ class TestExtensibility(unittest.TestCase):
         self.assertIn("vector_store", all_configs)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_toml_config")
+    @patch("cogentbase.config.main.load_toml_config")
     def test_custom_config_with_toml_file(self, mock_load_toml):
         mock_load_toml.return_value = {
             "agent": {
@@ -171,7 +171,7 @@ class TestExtensibility(unittest.TestCase):
     # --- Extensibility and Precedence Tests from test_cogent_base_config_extensibility.py ---
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_toml_config")
+    @patch("cogentbase.config.main.load_toml_config")
     def test_cogent_agent_config_creation(self, mock_load_toml):
         mock_load_toml.return_value = {}
         config = CogentAgentConfig()
@@ -183,7 +183,7 @@ class TestExtensibility(unittest.TestCase):
         self.assertIsInstance(config.get_config("workflow"), WorkflowConfig)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_toml_config")
+    @patch("cogentbase.config.main.load_toml_config")
     def test_cogent_agent_config_default_values(self, mock_load_toml):
         mock_load_toml.return_value = {}
         config = CogentAgentConfig()
@@ -200,7 +200,7 @@ class TestExtensibility(unittest.TestCase):
         self.assertEqual(workflow_config.timeout, 300)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_toml_config")
+    @patch("cogentbase.config.main.load_toml_config")
     def test_cogent_agent_config_with_toml_data(self, mock_load_toml):
         mock_load_toml.return_value = {
             "agent": {
@@ -233,7 +233,7 @@ class TestExtensibility(unittest.TestCase):
         self.assertEqual(config.llm.completion_model, "test_model")
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_toml_config")
+    @patch("cogentbase.config.main.load_toml_config")
     def test_cogent_agent_config_register_config(self, mock_load_toml):
         mock_load_toml.return_value = {}
         config = CogentAgentConfig()
@@ -257,7 +257,7 @@ class TestExtensibility(unittest.TestCase):
         self.assertIn("sensory", all_configs)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_toml_config")
+    @patch("cogentbase.config.main.load_toml_config")
     def test_cogent_agent_config_get_all_configs(self, mock_load_toml):
         mock_load_toml.return_value = {}
         config = CogentAgentConfig()
@@ -270,7 +270,7 @@ class TestExtensibility(unittest.TestCase):
         self.assertIsInstance(all_configs["workflow"], WorkflowConfig)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_toml_config")
+    @patch("cogentbase.config.main.load_toml_config")
     def test_cogent_agent_config_get_config_nonexistent(self, mock_load_toml):
         mock_load_toml.return_value = {}
         config = CogentAgentConfig()
@@ -278,7 +278,7 @@ class TestExtensibility(unittest.TestCase):
         self.assertIsNone(nonexistent)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_toml_config")
+    @patch("cogentbase.config.main.load_toml_config")
     def test_cogent_agent_config_convenience_properties(self, mock_load_toml):
         mock_load_toml.return_value = {}
         config = CogentAgentConfig()
@@ -290,7 +290,7 @@ class TestExtensibility(unittest.TestCase):
         self.assertIsInstance(config.get_config("workflow"), WorkflowConfig)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_toml_config")
+    @patch("cogentbase.config.main.load_toml_config")
     def test_cogent_agent_config_environment_variables(self, mock_load_toml):
         mock_load_toml.return_value = {}
         config = CogentAgentConfig()
@@ -298,14 +298,14 @@ class TestExtensibility(unittest.TestCase):
         self.assertFalse(config.debug)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_toml_config")
+    @patch("cogentbase.config.main.load_toml_config")
     def test_cogent_agent_config_toml_loading_called(self, mock_load_toml):
         mock_load_toml.return_value = {}
         CogentAgentConfig()
         self.assertEqual(mock_load_toml.call_count, 2)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_toml_config")
+    @patch("cogentbase.config.main.load_toml_config")
     def test_cogent_agent_config_multiple_custom_configs(self, mock_load_toml):
         mock_load_toml.return_value = {}
         config = CogentAgentConfig()
@@ -334,7 +334,7 @@ class TestExtensibility(unittest.TestCase):
         self.assertEqual(security.key_rotation_days, 30)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_toml_config")
+    @patch("cogentbase.config.main.load_toml_config")
     def test_cogent_agent_config_inheritance_structure(self, mock_load_toml):
         mock_load_toml.return_value = {}
         config = CogentAgentConfig()
@@ -387,7 +387,7 @@ dimensions = 1234
         self.assertEqual(config.llm.embedding_dimensions, 768)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_toml_config")
+    @patch("cogentbase.config.main.load_toml_config")
     def test_class_defaults_used_if_not_in_toml(self, mock_load_toml):
         mock_load_toml.return_value = {}
         config = CogentBaseConfig()
@@ -399,7 +399,7 @@ dimensions = 1234
 
     @pytest.mark.unit
     def test_class_defaults_vs_package_defaults(self):
-        from cogent.base.config.core import LLMConfig
+        from cogentbase.config.core import LLMConfig
 
         llm_config = LLMConfig()
         self.assertEqual(llm_config.completion_model, "openai_gpt4-1-mini")

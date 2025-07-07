@@ -6,7 +6,7 @@ import unittest
 
 import pytest
 
-from cogent.base.config import (
+from cogentbase.config import (
     LLMConfig,
     RerankerConfig,
     SensoryConfig,

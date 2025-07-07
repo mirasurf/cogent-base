@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from cogent.base.config import (
+from cogentbase.config import (
     load_merged_toml_configs,
     load_toml_config,
 )
@@ -186,7 +186,7 @@ class TestSafeConversion(unittest.TestCase):
     @pytest.mark.unit
     def test_safe_int(self):
         """Test _safe_int function."""
-        from cogent.base.config import _safe_int
+        from cogentbase.config import _safe_int
 
         self.assertEqual(_safe_int(42, 0), 42)
         self.assertEqual(_safe_int("42", 0), 42)
@@ -196,7 +196,7 @@ class TestSafeConversion(unittest.TestCase):
     @pytest.mark.unit
     def test_safe_bool(self):
         """Test _safe_bool function."""
-        from cogent.base.config import _safe_bool
+        from cogentbase.config import _safe_bool
 
         self.assertTrue(_safe_bool(True, False))
         self.assertFalse(_safe_bool(False, True))

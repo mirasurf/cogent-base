@@ -3,8 +3,8 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from cogent.base.models.chunk import Chunk
-from cogent.base.providers.embedding.litellm_embedding import LiteLLMEmbeddingModel
+from cogentbase.models.chunk import Chunk
+from cogentbase.providers.embedding.litellm_embedding import LiteLLMEmbeddingModel
 
 
 class TestIntegrationLiteLLMEmbedding:
@@ -51,7 +51,7 @@ class TestIntegrationLiteLLMEmbedding:
     @pytest.mark.asyncio
     async def test_ollama_object_embedding(self, mock_config, test_texts):
         """Test object embedding with Ollama model."""
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
 
@@ -98,7 +98,7 @@ class TestIntegrationLiteLLMEmbedding:
         if not os.getenv("OPENAI_API_KEY"):
             pytest.skip("OpenAI API key not available")
 
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
 
@@ -122,7 +122,7 @@ class TestIntegrationLiteLLMEmbedding:
         if not os.getenv("OPENAI_API_KEY"):
             pytest.skip("OpenAI API key not available")
 
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = 1536  # Large model dimensions
 
@@ -138,7 +138,7 @@ class TestIntegrationLiteLLMEmbedding:
     @pytest.mark.asyncio
     async def test_ollama_query_embedding(self, mock_config, single_text):
         """Test query embedding with Ollama model."""
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
 
@@ -181,7 +181,7 @@ class TestIntegrationLiteLLMEmbedding:
         if not os.getenv("OPENAI_API_KEY"):
             pytest.skip("OpenAI API key not available")
 
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
 
@@ -197,7 +197,7 @@ class TestIntegrationLiteLLMEmbedding:
     @pytest.mark.asyncio
     async def test_ollama_chunk_embedding_for_ingestion(self, mock_config, test_chunks):
         """Test chunk embedding for ingestion with Ollama model."""
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
             mock_get_config.return_value.llm.embedding_batch_size = 100
@@ -242,7 +242,7 @@ class TestIntegrationLiteLLMEmbedding:
         if not os.getenv("OPENAI_API_KEY"):
             pytest.skip("OpenAI API key not available")
 
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
             mock_get_config.return_value.llm.embedding_batch_size = 100
@@ -260,7 +260,7 @@ class TestIntegrationLiteLLMEmbedding:
     @pytest.mark.asyncio
     async def test_ollama_single_chunk_embedding(self, mock_config):
         """Test single chunk embedding with Ollama model."""
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
             mock_get_config.return_value.llm.embedding_batch_size = 100
@@ -306,7 +306,7 @@ class TestIntegrationLiteLLMEmbedding:
         if not os.getenv("OPENAI_API_KEY"):
             pytest.skip("OpenAI API key not available")
 
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
             mock_get_config.return_value.llm.embedding_batch_size = 100
@@ -325,7 +325,7 @@ class TestIntegrationLiteLLMEmbedding:
     @pytest.mark.asyncio
     async def test_ollama_embed_for_query(self, mock_config, single_text):
         """Test embed_for_query with Ollama model."""
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
 
@@ -368,7 +368,7 @@ class TestIntegrationLiteLLMEmbedding:
         if not os.getenv("OPENAI_API_KEY"):
             pytest.skip("OpenAI API key not available")
 
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
 
@@ -384,7 +384,7 @@ class TestIntegrationLiteLLMEmbedding:
     @pytest.mark.asyncio
     async def test_ollama_batch_processing(self, mock_config):
         """Test batch processing with Ollama model."""
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
             mock_get_config.return_value.llm.embedding_batch_size = 2  # Small batch size for testing
@@ -432,7 +432,7 @@ class TestIntegrationLiteLLMEmbedding:
         if not os.getenv("OPENAI_API_KEY"):
             pytest.skip("OpenAI API key not available")
 
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
             mock_get_config.return_value.llm.embedding_batch_size = 2  # Small batch size for testing
@@ -453,7 +453,7 @@ class TestIntegrationLiteLLMEmbedding:
     @pytest.mark.asyncio
     async def test_error_handling_invalid_model(self):
         """Test error handling for invalid model."""
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = {}
 
             with pytest.raises(ValueError, match="Model 'invalid_model' not found"):
@@ -463,7 +463,7 @@ class TestIntegrationLiteLLMEmbedding:
     @pytest.mark.asyncio
     async def test_error_handling_empty_texts(self, mock_config):
         """Test handling of empty text list."""
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
 
@@ -477,7 +477,7 @@ class TestIntegrationLiteLLMEmbedding:
     @pytest.mark.asyncio
     async def test_error_handling_empty_chunks(self, mock_config):
         """Test handling of empty chunk list."""
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
             mock_get_config.return_value.llm.embedding_batch_size = 100
@@ -544,7 +544,7 @@ class TestLiteLLMEmbeddingUnit:
     @pytest.mark.asyncio
     async def test_model_initialization(self, mock_config):
         """Test model initialization with valid config."""
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
 
@@ -558,7 +558,7 @@ class TestLiteLLMEmbeddingUnit:
     @pytest.mark.asyncio
     async def test_model_initialization_invalid_model(self, mock_config):
         """Test model initialization with invalid model key."""
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
             with pytest.raises(ValueError, match="Model 'invalid_model' not found"):
@@ -569,9 +569,9 @@ class TestLiteLLMEmbeddingUnit:
     async def test_mocked_litellm_embedding(self, mock_config, mock_litellm_response):
         """Test embedding with mocked LiteLLM."""
         with (
-            patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
+            patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
             patch(
-                "cogent.base.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
+                "cogentbase.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
             ) as mock_litellm,
         ):
 
@@ -598,8 +598,8 @@ class TestLiteLLMEmbeddingUnit:
     async def test_mocked_ollama_embedding(self, mock_config, mock_litellm_response):
         """Test Ollama embedding with mocked Ollama client."""
         with (
-            patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
-            patch("cogent.base.providers.embedding.litellm_embedding.ollama.AsyncClient") as mock_ollama_client,
+            patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
+            patch("cogentbase.providers.embedding.litellm_embedding.ollama.AsyncClient") as mock_ollama_client,
         ):
 
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
@@ -631,9 +631,9 @@ class TestLiteLLMEmbeddingUnit:
     async def test_mocked_openai_large_embedding(self, mock_config, mock_litellm_response):
         """Test OpenAI large model with dimensions parameter."""
         with (
-            patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
+            patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
             patch(
-                "cogent.base.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
+                "cogentbase.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
             ) as mock_litellm,
         ):
 
@@ -656,9 +656,9 @@ class TestLiteLLMEmbeddingUnit:
     async def test_mocked_query_embedding(self, mock_config, mock_litellm_response):
         """Test query embedding with mocked LiteLLM."""
         with (
-            patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
+            patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
             patch(
-                "cogent.base.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
+                "cogentbase.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
             ) as mock_litellm,
         ):
 
@@ -684,9 +684,9 @@ class TestLiteLLMEmbeddingUnit:
     async def test_mocked_chunk_embedding_for_ingestion(self, mock_config, mock_litellm_response):
         """Test chunk embedding for ingestion with mocked LiteLLM."""
         with (
-            patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
+            patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
             patch(
-                "cogent.base.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
+                "cogentbase.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
             ) as mock_litellm,
         ):
 
@@ -716,9 +716,9 @@ class TestLiteLLMEmbeddingUnit:
     async def test_mocked_single_chunk_embedding(self, mock_config, mock_litellm_response):
         """Test single chunk embedding with mocked LiteLLM."""
         with (
-            patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
+            patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
             patch(
-                "cogent.base.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
+                "cogentbase.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
             ) as mock_litellm,
         ):
 
@@ -744,9 +744,9 @@ class TestLiteLLMEmbeddingUnit:
     async def test_mocked_batch_processing(self, mock_config, mock_litellm_response):
         """Test batch processing with mocked LiteLLM."""
         with (
-            patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
+            patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
             patch(
-                "cogent.base.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
+                "cogentbase.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
             ) as mock_litellm,
         ):
 
@@ -778,9 +778,9 @@ class TestLiteLLMEmbeddingUnit:
     async def test_mocked_embed_for_query(self, mock_config, mock_litellm_response):
         """Test embed_for_query with mocked LiteLLM."""
         with (
-            patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
+            patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
             patch(
-                "cogent.base.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
+                "cogentbase.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
             ) as mock_litellm,
         ):
 
@@ -806,8 +806,8 @@ class TestLiteLLMEmbeddingUnit:
     async def test_mocked_error_handling(self, mock_config):
         """Test error handling with mocked LiteLLM."""
         with (
-            patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
-            patch("cogent.base.providers.embedding.litellm_embedding.litellm.aembedding") as mock_litellm,
+            patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
+            patch("cogentbase.providers.embedding.litellm_embedding.litellm.aembedding") as mock_litellm,
         ):
 
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
@@ -825,9 +825,9 @@ class TestLiteLLMEmbeddingUnit:
     async def test_mocked_query_error_fallback(self, mock_config):
         """Test query embedding error handling."""
         with (
-            patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
+            patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
             patch(
-                "cogent.base.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
+                "cogentbase.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
             ) as mock_litellm,
         ):
 
@@ -846,7 +846,7 @@ class TestLiteLLMEmbeddingUnit:
     @pytest.mark.asyncio
     async def test_mocked_empty_texts(self, mock_config):
         """Test handling of empty text list."""
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
 
@@ -860,7 +860,7 @@ class TestLiteLLMEmbeddingUnit:
     @pytest.mark.asyncio
     async def test_mocked_empty_chunks(self, mock_config):
         """Test handling of empty chunk list."""
-        with patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
+        with patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
             mock_get_config.return_value.llm.embedding_dimensions = mock_config["embedding"]["embedding_dimensions"]
             mock_get_config.return_value.llm.embedding_batch_size = 100
@@ -876,11 +876,11 @@ class TestLiteLLMEmbeddingUnit:
     async def test_dimension_validation_warning(self, mock_config, mock_litellm_response):
         """Test dimension validation warning."""
         with (
-            patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
+            patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
             patch(
-                "cogent.base.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
+                "cogentbase.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
             ) as mock_litellm,
-            patch("cogent.base.providers.embedding.litellm_embedding.logger") as mock_logger,
+            patch("cogentbase.providers.embedding.litellm_embedding.logger") as mock_logger,
         ):
 
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
@@ -902,9 +902,9 @@ class TestLiteLLMEmbeddingUnit:
     async def test_mocked_response_formats(self, mock_config):
         """Test handling of different LiteLLM response formats."""
         with (
-            patch("cogent.base.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
+            patch("cogentbase.providers.embedding.litellm_embedding.get_cogent_config") as mock_get_config,
             patch(
-                "cogent.base.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
+                "cogentbase.providers.embedding.litellm_embedding.litellm.aembedding", new_callable=AsyncMock
             ) as mock_litellm,
         ):
 

@@ -35,7 +35,7 @@ make install-dev
 ### Basic Configuration
 
 ```python
-from cogent.base.config import get_cogent_config, BaseConfig, toml_config
+from cogentbase.config import get_cogent_config, BaseConfig, toml_config
 
 # Get the global configuration
 config = get_cogent_config()
@@ -50,7 +50,7 @@ vector_store_config = config.vector_store
 Create custom configuration classes and extend `CogentBaseConfig`:
 
 ```python
-from cogent.base.config import CogentBaseConfig, BaseConfig, toml_config
+from cogentbase.config import CogentBaseConfig, BaseConfig, toml_config
 
 @toml_config("agent")
 class AgentConfig(BaseConfig):
@@ -114,7 +114,7 @@ model = "my_custom_model"
 ### LLM Providers
 
 ```python
-from cogent.base.providers.completion import LiteLLMCompletionModel
+from cogentbase.providers.completion import LiteLLMCompletionModel
 
 model = LiteLLMCompletionModel("gpt-4")
 response = await model.complete(request)
@@ -123,7 +123,7 @@ response = await model.complete(request)
 ### Embedding Providers
 
 ```python
-from cogent.base.providers.embedding import LiteLLMEmbeddingModel
+from cogentbase.providers.embedding import LiteLLMEmbeddingModel
 
 model = LiteLLMEmbeddingModel("text-embedding-ada-002")
 embeddings = await model.embed_texts(["Hello", "World"])
@@ -132,7 +132,7 @@ embeddings = await model.embed_texts(["Hello", "World"])
 ### Vector Store Providers
 
 ```python
-from cogent.base.providers.vector_store import WeaviateVectorStore
+from cogentbase.providers.vector_store import WeaviateVectorStore
 
 store = WeaviateVectorStore()
 await store.insert(vectors, metadata)
@@ -144,7 +144,7 @@ results = await store.search(query_vector, limit=10)
 ### Document Parsing
 
 ```python
-from cogent.base.sensory.parser import CogentParser
+from cogentbase.sensory.parser import CogentParser
 
 parser = CogentParser()
 metadata, elements = await parser.parse_file_to_text(file_content, filename)
@@ -153,7 +153,7 @@ metadata, elements = await parser.parse_file_to_text(file_content, filename)
 ### Text Chunking
 
 ```python
-from cogent.base.sensory.chunker import StandardChunker
+from cogentbase.sensory.chunker import StandardChunker
 
 chunker = StandardChunker(chunk_size=1000, overlap=200)
 chunks = await chunker.split_text(long_text)
