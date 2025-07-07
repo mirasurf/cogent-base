@@ -1,0 +1,95 @@
+# Cogent Providers Configuration File
+
+# =============================================================================
+# REGISTERED MODELS SECTION
+# =============================================================================
+# Define the AI models you want to use with Cogent
+# Each model has a unique key (e.g., "openai_gpt4-1") that you reference in other sections
+[registered_models]
+
+# OpenAI models - Requires OpenAI API key in environment variables
+openai_gpt4-1 = { model_name = "gpt-4.1" }
+openai_gpt4-1-mini = { model_name = "gpt-4.1-mini" }
+openai_embedding = { model_name = "text-embedding-3-small" }
+openai_embedding_large = { model_name = "text-embedding-3-large" }
+
+# Azure OpenAI models - For enterprise deployments using Azure
+# Replace YOUR_AZURE_URL_HERE with your actual Azure endpoint
+azure_gpt4 = { model_name = "gpt-4", api_base = "YOUR_AZURE_URL_HERE", api_version = "2023-05-15", deployment_id = "gpt-4-deployment" }
+azure_gpt35 = { model_name = "gpt-3.5-turbo", api_base = "YOUR_AZURE_URL_HERE", api_version = "2023-05-15", deployment_id = "gpt-35-turbo-deployment" }
+azure_embedding = { model_name = "text-embedding-ada-002", api_base = "YOUR_AZURE_URL_HERE", api_version = "2023-05-15", deployment_id = "embedding-ada-002" }
+
+# Anthropic Claude models - Requires Anthropic API key
+claude_opus = { model_name = "claude-3-opus-20240229" }
+claude_sonnet = { model_name = "claude-3-7-sonnet-latest" }
+
+# Google Gemini models - Requires Google API key
+gemini_flash = { model_name = "gemini/gemini-2.5-flash-preview-05-20" }
+
+# Ollama models - For local/self-hosted models
+# Update api_base if running Ollama in Docker or on a different host
+ollama_qwen_vision = { model_name = "qwen2.5vl:latest", api_base = "http://localhost:11434", vision = true }
+ollama_llama_vision = { model_name = "llama3.2-vision", api_base = "http://localhost:11434", vision = true }
+ollama_embedding = { model_name = "nomic-embed-text", api_base = "http://localhost:11434" }
+
+# =============================================================================
+# REGISTERED VECTOR STORES SECTION
+# =============================================================================
+# Define where to store and retrieve embeddings for semantic search
+[registered_vector_stores]
+
+# PostgreSQL + pgvector - Recommended for production
+# Requires PostgreSQL with pgvector extension installed
+pgvector = { dbname = "postgres", user = "postgres", password = "postgres", host = "localhost", port = 5432, diskann = true, hnsw = false }
+
+# Weaviate - Alternative vector database
+# Requires Weaviate instance running
+weaviate = { cluster_url = "http://localhost:8080", auth_client_secret = "secret", additional_headers = {} }
+
+# =============================================================================
+# REGISTERED RERANKERS SECTION
+# =============================================================================
+# Define reranker models for improving search result relevance
+[registered_rerankers]
+
+flag_reranker = { model_name = "BAAI/bge-reranker-v2-gemma", query_max_length = 256, passage_max_length = 512, use_fp16 = true, device = "mps" }
+ollama_reranker = { model_name = "linux6200/bge-reranker-v2-m3:latest", api_base = "http://localhost:11434" }
+
+# =============================================================================
+# COMPLETION SETTINGS
+# =============================================================================
+# Controls how the AI generates text responses
+[completion]
+provider = "litellm"         # Which provider to use for text generation
+model = "ollama_qwen_vision" # Which model to use for text generation (references a key from registered_models above)
+default_max_tokens = 1000    # Maximum number of tokens in the response
+default_temperature = 0.3    # Controls randomness: 0.0 = deterministic, 1.0 = very random
+
+# =============================================================================
+# EMBEDDING SETTINGS
+# =============================================================================
+# Controls how text is converted to vectors for semantic search
+[embedding]
+provider = "litellm"          # Which provider to use for creating embeddings
+model = "ollama_embedding"    # Which model to use for creating embeddings
+dimensions = 768              # Number of dimensions in the embedding vectors
+similarity_metric = "cosine"  # How to measure similarity between vectors (cosine, euclidean, dot)
+
+# =============================================================================
+# RERANKER SETTINGS
+# =============================================================================
+# Controls re-ranking of search results for better relevance
+[reranker]
+enable_reranker = false          # Whether to use re-ranking to improve search results
+provider = "litellm"             # Re-ranking service provider (flag, litellm)
+model = "ollama_reranker"   # Specific re-ranking model
+
+# =============================================================================
+# VECTOR STORE SETTINGS
+# =============================================================================
+# Configuration for the vector database
+[vector_store]
+provider = "pgvector"         # Which provider to use for vector store
+store = "pgvector"            # Which vector store to use (references a key from registered_vector_stores above)
+collection_name = "cogent"    # Name of the collection/table to store embeddings
+embedding_model_dims = 768    # Must match the dimensions of your embedding model
