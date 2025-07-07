@@ -25,8 +25,6 @@ class TestCogentBaseConfig(unittest.TestCase):
         mock_load_toml.return_value = {}
         config = CogentBaseConfig()
 
-        self.assertEqual(config.env, "development")
-        self.assertFalse(config.debug)
         self.assertIsInstance(config.llm, BaseConfig)
         self.assertIsInstance(config.vector_store, BaseConfig)
         self.assertIsInstance(config.reranker, BaseConfig)

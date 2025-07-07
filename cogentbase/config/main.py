@@ -6,26 +6,16 @@ Contains the main CogentBaseConfig class and global configuration instance.
 from pathlib import Path
 from typing import Dict, Optional
 
-from dotenv import load_dotenv
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 
 from .base import BaseConfig
 from .core import LLMConfig, RerankerConfig, SensoryConfig, VectorStoreConfig
 from .registry import ConfigRegistry
 from .utils import load_toml_config
 
-# Load environment variables from .env file
-load_dotenv(override=True)
-
 
 class CogentBaseConfig(BaseModel):
     """Main configuration class that combines all module configurations."""
-
-    model_config = ConfigDict(env_file=".env", env_file_encoding="utf-8", case_sensitive=True)
-
-    # Environment
-    env: str = Field(default="development", validation_alias="ENV")
-    debug: bool = Field(default=False, validation_alias="DEBUG")
 
     # Config registry for extensible submodule configs
     registry: ConfigRegistry = Field(default_factory=ConfigRegistry)

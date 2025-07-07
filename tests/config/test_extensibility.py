@@ -291,14 +291,6 @@ class TestExtensibility(unittest.TestCase):
 
     @pytest.mark.unit
     @patch("cogentbase.config.main.load_toml_config")
-    def test_cogent_agent_config_environment_variables(self, mock_load_toml):
-        mock_load_toml.return_value = {}
-        config = CogentAgentConfig()
-        self.assertEqual(config.env, "development")
-        self.assertFalse(config.debug)
-
-    @pytest.mark.unit
-    @patch("cogentbase.config.main.load_toml_config")
     def test_cogent_agent_config_toml_loading_called(self, mock_load_toml):
         mock_load_toml.return_value = {}
         CogentAgentConfig()
@@ -346,8 +338,6 @@ class TestExtensibility(unittest.TestCase):
         self.assertTrue(hasattr(config, "vector_store"))
         self.assertTrue(hasattr(config, "reranker"))
         self.assertTrue(hasattr(config, "sensory"))
-        self.assertTrue(hasattr(config, "env"))
-        self.assertTrue(hasattr(config, "debug"))
 
     # --- Config Loading Order and Precedence Tests ---
 
@@ -391,8 +381,6 @@ dimensions = 1234
     def test_class_defaults_used_if_not_in_toml(self, mock_load_toml):
         mock_load_toml.return_value = {}
         config = CogentBaseConfig()
-        self.assertEqual(config.env, "development")
-        self.assertFalse(config.debug)
         self.assertEqual(config.llm.completion_provider, "litellm")
         self.assertEqual(config.llm.completion_model, "openai_gpt4-1-mini")
         self.assertEqual(config.llm.embedding_dimensions, 768)
