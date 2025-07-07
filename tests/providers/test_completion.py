@@ -60,10 +60,18 @@ class TestIntegrationLiteLLMCompletion:
     @pytest.fixture
     def vision_request(self):
         """Vision completion request for testing."""
-        # Base64 encoded 28x28 PNG image (minimum size for Qwen2.5VL)
-        image_data = "iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAIAAACpL3sXAAAALUlEQVR42mNgGAWjYBSMglEwCkYxQK5BhEYMTAxEgHVEQwMVQGEIQC3KEIFkIMRAwAoTwOP96jCykAAAAASUVORK5CYII="
+        image_data = "".join(
+            [
+                "iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAIAAACpL3sXAAAALUlEQVR42mNgGAWjYBSMglEwCkYxQK5BhEYMTAxEgHV",
+                "EQwMVQGEIQC3KEIFkIMRAwAoTwOP96jCykAAAAASUVORK5C",
+                "YII=",
+            ]
+        )
         return CompletionRequest(
-            query="What do you see in this image?", context_chunks=[image_data], max_tokens=100, temperature=0.1
+            query="What do you see in this image?",
+            context_chunks=[image_data],
+            max_tokens=100,
+            temperature=0.1,
         )
 
     @pytest.fixture

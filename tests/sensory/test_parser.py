@@ -532,8 +532,8 @@ class TestCogentParser:
         """Test text splitting with very long text."""
         # Create a very long text that will definitely be split
         text = (
-            "This is a very long sentence that will be repeated many times to create a text that exceeds the chunk size limit. "
-            * 100
+            "This is a very long sentence that will be repeated many times to create a text that exceeds the "
+            "chunk size limit. " * 100
         )
 
         chunks = await parser.split_text(text)

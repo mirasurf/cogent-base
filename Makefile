@@ -5,6 +5,7 @@ PYTHON := python3
 HATCH := hatch
 PYTHON_MODULES := cogent tests
 TEST_DIR := tests
+LINE_LENGTH := 120
 
 # Colors for output
 GREEN := \033[0;32m
@@ -32,8 +33,8 @@ install-dev:
 format:
 	@echo "$(BLUE)🎨 Formatting code...$(RESET)"
 	@$(HATCH) run autoflake --in-place --recursive --remove-all-unused-imports --remove-unused-variables $(PYTHON_MODULES)
-	@$(HATCH) run isort $(PYTHON_MODULES)
-	@$(HATCH) run black $(PYTHON_MODULES)
+	@$(HATCH) run isort $(PYTHON_MODULES) --line-length $(LINE_LENGTH)
+	@$(HATCH) run black $(PYTHON_MODULES) --line-length $(LINE_LENGTH)
 
 # Check if code is properly formatted
 format-check:
@@ -44,7 +45,7 @@ format-check:
 # Lint code
 lint:
 	@echo "$(BLUE)🔍 Running linters...$(RESET)"
-	@$(HATCH) run flake8 --max-line-length=120 --extend-ignore=E203,W503 $(PYTHON_MODULES)
+	@$(HATCH) run flake8 --max-line-length=$(LINE_LENGTH) --extend-ignore=E203,W503 $(PYTHON_MODULES)
 
 # Auto-fix linting issues where possible
 lint-fix:
