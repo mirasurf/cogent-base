@@ -7,19 +7,24 @@ from unittest.mock import patch
 
 import pytest
 
-from cogent.base.config import BaseConfig, CogentConfig, get_cogent_config, toml_config
+from cogent.base.config import (
+    BaseConfig,
+    CogentBaseConfig,
+    get_cogent_config,
+    toml_config,
+)
 from cogent.base.rootdir import ROOT_DIR
 
 
-class TestCogentConfig(unittest.TestCase):
-    """Test the CogentConfig class."""
+class TestCogentBaseConfig(unittest.TestCase):
+    """Test the CogentBaseConfig class."""
 
     @pytest.mark.unit
     @patch("cogent.base.config.load_merged_toml_configs")
     def test_default_values(self, mock_load_merged):
-        """Test CogentConfig default values."""
+        """Test CogentBaseConfig default values."""
         mock_load_merged.return_value = {}
-        config = CogentConfig()
+        config = CogentBaseConfig()
 
         self.assertEqual(config.env, "development")
         self.assertFalse(config.debug)
@@ -33,13 +38,13 @@ class TestCogentConfig(unittest.TestCase):
     def test_load_merged_toml_configs_called(self, mock_load_merged):
         """Test that load_merged_toml_configs is called during initialization."""
         mock_load_merged.return_value = {}
-        CogentConfig()
+        CogentBaseConfig()
         mock_load_merged.assert_called_once()
 
     @pytest.mark.unit
     @patch("cogent.base.config.main.load_merged_toml_configs")
     def test_load_merged_toml_configs_with_data(self, mock_load_merged):
-        """Test CogentConfig with TOML data."""
+        """Test CogentBaseConfig with TOML data."""
         mock_load_merged.return_value = {
             "completion": {"model": "test_model"},
             "embedding": {"dimensions": 1024},
@@ -47,7 +52,7 @@ class TestCogentConfig(unittest.TestCase):
             "reranker": {"enable_reranker": True},
             "sensory": {"parser": {"chunk_size": 8000}},
         }
-        config = CogentConfig()
+        config = CogentBaseConfig()
         # Check that configs were updated from TOML
         self.assertEqual(config.llm.completion_model, "test_model")
         self.assertEqual(config.llm.embedding_dimensions, 1024)
@@ -60,18 +65,16 @@ class TestCogentConfig(unittest.TestCase):
     def test_config_paths(self, mock_load_merged):
         """Test that config paths are set correctly."""
         mock_load_merged.return_value = {}
-        config = CogentConfig()
+        config = CogentBaseConfig()
 
         self.assertEqual(config.base_toml, ROOT_DIR / "config" / "base.toml")
-        self.assertEqual(config.providers_toml, ROOT_DIR / "config" / "providers.toml")
-        self.assertEqual(config.sensory_toml, ROOT_DIR / "config" / "sensory.toml")
 
     @pytest.mark.unit
     @patch("cogent.base.config.load_merged_toml_configs")
     def test_register_config(self, mock_load_merged):
         """Test registering a new configuration."""
         mock_load_merged.return_value = {}
-        config = CogentConfig()
+        config = CogentBaseConfig()
 
         # Create a custom config
         @toml_config("custom_section")

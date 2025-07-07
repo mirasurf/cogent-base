@@ -10,7 +10,7 @@ from .core import (
     SensoryConfig,
     VectorStoreConfig,
 )
-from .main import CogentConfig, get_cogent_config
+from .main import CogentBaseConfig, get_cogent_config
 from .registry import ConfigRegistry
 from .utils import (
     _safe_bool,
@@ -32,7 +32,7 @@ __all__ = [
     # Registry
     "ConfigRegistry",
     # Main configuration
-    "CogentConfig",
+    "CogentBaseConfig",
     "get_cogent_config",
     # Utility functions
     "load_toml_config",

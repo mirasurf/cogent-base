@@ -12,7 +12,7 @@ import pytest
 
 from cogent.base.config import (
     BaseConfig,
-    CogentConfig,
+    CogentBaseConfig,
     get_cogent_config,
     toml_config,
 )
@@ -106,7 +106,7 @@ class TestExtensibility(unittest.TestCase):
     @pytest.mark.unit
     @patch("cogent.base.config.load_merged_toml_configs")
     def test_register_custom_config_with_cogent(self, mock_load_merged):
-        """Test registering custom config with main CogentConfig."""
+        """Test registering custom config with main CogentBaseConfig."""
         mock_load_merged.return_value = {}
 
         # Create custom config
@@ -124,7 +124,7 @@ class TestExtensibility(unittest.TestCase):
                 )
 
         # Get main config and register custom config
-        cogent_config = get_cogent_config()
+        cogent_config = CogentBaseConfig()
         agent_config = AgentConfig()
         cogent_config.register_config("agent", agent_config)
 
@@ -196,7 +196,7 @@ class TestExtensibility(unittest.TestCase):
                     )
 
             # Create main config and register custom config
-            cogent_config = CogentConfig()
+            cogent_config = CogentBaseConfig()
             agent_config = AgentConfig()
             cogent_config.register_config("agent", agent_config)
             # Manually update from TOML to simulate what happens for built-in configs
