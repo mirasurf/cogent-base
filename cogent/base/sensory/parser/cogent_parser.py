@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import filetype
 from unstructured.partition.auto import partition
 
-from cogent.base.config import get_config
+from cogent.base.config import get_cogent_config
 from cogent.base.models.chunk import Chunk
 from cogent.base.sensory.chunker.contextual_chunker import ContextualChunker
 from cogent.base.sensory.chunker.standard_chunker import StandardChunker
@@ -67,7 +67,7 @@ class CogentParser(BaseParser):
             video_path = temp_file.name
 
             # Load the config to get the frame_sample_rate from cogent.base.toml
-            config = get_config()
+            config = get_cogent_config()
             parser_config = config.get("parser", {})
             vision_config = parser_config.get("vision", {})
             frame_sample_rate = vision_config.get("frame_sample_rate", self.frame_sample_rate)

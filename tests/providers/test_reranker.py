@@ -2,8 +2,9 @@
 Tests for reranker providers.
 """
 
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 
 try:
     import httpx
@@ -14,7 +15,6 @@ from cogent.base.models.chunk import ObjectChunk
 from cogent.base.providers.reranker.cogent_reranker import CogentReranker
 from cogent.base.providers.reranker.flag_reranker import FlagReranker
 from cogent.base.providers.reranker.litellm_reranker import LiteLLMReranker
-from cogent.base.config import RerankerConfig
 
 
 class TestFlagRerankerUnit:
@@ -123,7 +123,7 @@ class TestLiteLLMRerankerUnit:
                 self.reranker = DummyReranker()
 
         mock_config = DummyConfig()
-        with patch("cogent.providers.reranker.litellm_reranker.get_config", return_value=mock_config):
+        with patch("cogent.base.providers.reranker.litellm_reranker.get_cogent_config", return_value=mock_config):
             with patch("litellm.acompletion") as mock_litellm:
                 mock_response = MagicMock()
                 mock_response.choices = [MagicMock()]
@@ -164,7 +164,7 @@ class TestLiteLLMRerankerUnit:
                 self.reranker = DummyReranker()
 
         mock_config = DummyConfig()
-        with patch("cogent.providers.reranker.litellm_reranker.get_config", return_value=mock_config):
+        with patch("cogent.base.providers.reranker.litellm_reranker.get_cogent_config", return_value=mock_config):
             with patch("litellm.acompletion") as mock_litellm:
                 mock_response = MagicMock()
                 mock_response.choices = [MagicMock()]
@@ -199,8 +199,8 @@ class TestCogentRerankerUnit:
                 self.reranker = DummyReranker()
 
         mock_config = DummyConfig()
-        with patch("cogent.providers.reranker.cogent_reranker.get_config", return_value=mock_config):
-            with patch("cogent.providers.reranker.flag_reranker.FlagReranker") as mock_flag_reranker:
+        with patch("cogent.base.providers.reranker.cogent_reranker.get_cogent_config", return_value=mock_config):
+            with patch("cogent.base.providers.reranker.flag_reranker.FlagReranker") as mock_flag_reranker:
                 mock_reranker_instance = AsyncMock()
                 mock_reranker_instance.rerank.return_value = [
                     ObjectChunk(
@@ -241,8 +241,8 @@ class TestCogentRerankerUnit:
                 self.reranker = DummyReranker()
 
         mock_config = DummyConfig()
-        with patch("cogent.providers.reranker.cogent_reranker.get_config", return_value=mock_config):
-            with patch("cogent.providers.reranker.flag_reranker.FlagReranker") as mock_flag_reranker:
+        with patch("cogent.base.providers.reranker.cogent_reranker.get_cogent_config", return_value=mock_config):
+            with patch("cogent.base.providers.reranker.flag_reranker.FlagReranker") as mock_flag_reranker:
                 mock_reranker_instance = AsyncMock()
                 mock_reranker_instance.compute_score.return_value = 0.8
                 mock_flag_reranker.return_value = mock_reranker_instance
@@ -270,7 +270,7 @@ class TestCogentRerankerUnit:
                 self.reranker = DummyReranker()
 
         mock_config = DummyConfig()
-        with patch("cogent.providers.reranker.cogent_reranker.get_config", return_value=mock_config):
+        with patch("cogent.base.providers.reranker.cogent_reranker.get_cogent_config", return_value=mock_config):
             with pytest.raises(ValueError, match="Provider 'unsupported' not supported"):
                 CogentReranker("test_reranker")
 
@@ -295,8 +295,8 @@ class TestOllamaRerankerUnit:
                 self.reranker = DummyReranker()
 
         mock_config = DummyConfig()
-        with patch("cogent.providers.reranker.litellm_reranker.get_config", return_value=mock_config):
-            with patch("cogent.providers.reranker.litellm_reranker.ollama") as mock_ollama:
+        with patch("cogent.base.providers.reranker.litellm_reranker.get_cogent_config", return_value=mock_config):
+            with patch("cogent.base.providers.reranker.litellm_reranker.ollama") as mock_ollama:
                 mock_client = MagicMock()
                 mock_ollama.Client.return_value = mock_client
                 mock_client.chat = AsyncMock()
@@ -336,8 +336,8 @@ class TestOllamaRerankerUnit:
                 self.reranker = DummyReranker()
 
         mock_config = DummyConfig()
-        with patch("cogent.providers.reranker.litellm_reranker.get_config", return_value=mock_config):
-            with patch("cogent.providers.reranker.litellm_reranker.ollama") as mock_ollama:
+        with patch("cogent.base.providers.reranker.litellm_reranker.get_cogent_config", return_value=mock_config):
+            with patch("cogent.base.providers.reranker.litellm_reranker.ollama") as mock_ollama:
                 mock_client = MagicMock()
                 mock_ollama.Client.return_value = mock_client
                 mock_client.chat = AsyncMock()
@@ -366,7 +366,7 @@ class TestIntegrationReranker:
 
         # Skip if Ollama is not available
         try:
-            import ollama
+            pass
         except ImportError:
             pytest.skip("Ollama library not available")
 

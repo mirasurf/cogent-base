@@ -5,7 +5,7 @@ Copyright (c) 2025 Mirasurf
 import logging
 from typing import List, Optional, Union
 
-from cogent.base.config import get_config
+from cogent.base.config import get_cogent_config
 from cogent.base.models.chunk import ObjectChunk
 from cogent.base.providers.reranker.base_reranker import BaseReranker
 
@@ -25,7 +25,7 @@ class CogentReranker(BaseReranker):
         Args:
             reranker_key: The key of the reranker in the registered_rerankers config
         """
-        settings = get_config()
+        settings = get_cogent_config()
         self.reranker_key = reranker_key
         self.reranker_impl: Optional[BaseReranker] = None
 

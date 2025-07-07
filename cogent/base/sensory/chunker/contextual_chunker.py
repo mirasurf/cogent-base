@@ -7,7 +7,7 @@ Original code from https://github.com/morphik/morphik-core
 import logging
 from typing import List
 
-from cogent.base.config import get_config
+from cogent.base.config import get_cogent_config
 from cogent.base.models.chunk import Chunk
 from cogent.base.models.completion import CompletionRequest
 from cogent.base.providers.completion.litellm_completion import LiteLLMCompletionModel
@@ -41,7 +41,7 @@ class ContextualChunker(BaseChunker):
         self.standard_chunker = StandardChunker(chunk_size, chunk_overlap)
 
         # Get the config for contextual chunking
-        config = get_config()
+        config = get_cogent_config()
         self.model_key = config.sensory.contextual_chunking_model
 
         # Make sure the model exists in registered_models

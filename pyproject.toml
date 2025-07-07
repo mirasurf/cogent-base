@@ -9,12 +9,8 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
     "python-dotenv>=1.0.1",
-    "langgraph>=0.0.19",
     "pydantic>=2.6.1",
-    "pydantic-settings>=2.10.0",
-    "python-multipart>=0.0.9",
-    "colorama>=0.4.6",
-    "litellm>=1.72.0",
+    "litellm>=1.73.0",
     "ollama>=0.4.0",
     "numpy<2.0.0",
     "FlagEmbedding>=1.2.0",
@@ -43,9 +39,6 @@ dev = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[tool.hatch.build]
-sources = ["src"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["cogent"]

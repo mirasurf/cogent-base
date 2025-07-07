@@ -1,9 +1,7 @@
-import asyncio
 import os
-import pytest
-from typing import AsyncGenerator, Dict, List
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
 from pydantic import BaseModel
 
 from cogent.base.models.completion import CompletionRequest, CompletionResponse
@@ -12,6 +10,7 @@ from cogent.base.providers.completion.litellm_completion import LiteLLMCompletio
 
 class PersonSchema(BaseModel):
     """Test schema for structured output testing."""
+
     name: str
     age: int
     occupation: str
@@ -26,18 +25,13 @@ class TestIntegrationLiteLLMCompletion:
         return {
             "llm": {
                 "registered_models": {
-                    "test_ollama": {
-                        "model_name": "llama3.2:3b",
-                        "api_base": "http://localhost:11434"
-                    },
-                    "test_openai": {
-                        "model_name": "gpt-4o-mini"
-                    },
+                    "test_ollama": {"model_name": "llama3.2:3b", "api_base": "http://localhost:11434"},
+                    "test_openai": {"model_name": "gpt-4o-mini"},
                     "test_ollama_vision": {
                         "model_name": "qwen2.5vl:3b",
                         "api_base": "http://localhost:11434",
-                        "vision": True
-                    }
+                        "vision": True,
+                    },
                 }
             }
         }
@@ -49,7 +43,7 @@ class TestIntegrationLiteLLMCompletion:
             query="What is the capital of France?",
             context_chunks=["Paris is the capital of France."],
             max_tokens=100,
-            temperature=0.1
+            temperature=0.1,
         )
 
     @pytest.fixture
@@ -60,21 +54,16 @@ class TestIntegrationLiteLLMCompletion:
             context_chunks=["John Smith is a 30-year-old software engineer."],
             max_tokens=100,
             temperature=0.1,
-            schema=PersonSchema
+            schema=PersonSchema,
         )
 
     @pytest.fixture
     def vision_request(self):
         """Vision completion request for testing."""
         # Base64 encoded 28x28 PNG image (minimum size for Qwen2.5VL)
-        image_data = (
-            "iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAIAAACpL3sXAAAALUlEQVR42mNgGAWjYBSMglEwCkYxQK5BhEYMTAxEgHVEQwMVQGEIQC3KEIFkIMRAwAoTwOP96jCykAAAAASUVORK5CYII="
-        )
+        image_data = "iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAIAAACpL3sXAAAALUlEQVR42mNgGAWjYBSMglEwCkYxQK5BhEYMTAxEgHVEQwMVQGEIQC3KEIFkIMRAwAoTwOP96jCykAAAAASUVORK5CYII="
         return CompletionRequest(
-            query="What do you see in this image?",
-            context_chunks=[image_data],
-            max_tokens=100,
-            temperature=0.1
+            query="What do you see in this image?", context_chunks=[image_data], max_tokens=100, temperature=0.1
         )
 
     @pytest.fixture
@@ -85,26 +74,26 @@ class TestIntegrationLiteLLMCompletion:
             context_chunks=[],
             max_tokens=200,
             temperature=0.7,
-            stream_response=True
+            stream_response=True,
         )
-
 
     @pytest.mark.integration
     @pytest.mark.asyncio
     async def test_ollama_basic_completion(self, mock_config, basic_request):
         """Test basic completion with Ollama model."""
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
             # Skip if Ollama is not available
             try:
-                import ollama
+                pass
             except ImportError:
                 pytest.skip("Ollama library not available")
 
             # Check if Ollama service is running
             try:
                 import httpx
+
                 async with httpx.AsyncClient() as client:
                     response = await client.get("http://localhost:11434/api/tags", timeout=5.0)
                     if response.status_code != 200:
@@ -121,7 +110,6 @@ class TestIntegrationLiteLLMCompletion:
             assert "Paris" in response.completion or "France" in response.completion
             assert response.usage is not None
             assert "total_tokens" in response.usage
-
 
     @pytest.mark.integration
     @pytest.mark.asyncio
@@ -131,7 +119,7 @@ class TestIntegrationLiteLLMCompletion:
         if not os.getenv("OPENAI_API_KEY"):
             pytest.skip("OpenAI API key not available")
 
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
             model = LiteLLMCompletionModel("test_openai")
@@ -144,23 +132,23 @@ class TestIntegrationLiteLLMCompletion:
             assert response.usage is not None
             assert "total_tokens" in response.usage
 
-
     @pytest.mark.integration
     @pytest.mark.asyncio
     async def test_ollama_structured_completion(self, mock_config, structured_request):
         """Test structured completion with Ollama model."""
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
             # Skip if Ollama is not available
             try:
-                import ollama
+                pass
             except ImportError:
                 pytest.skip("Ollama library not available")
 
             # Check if Ollama service is running
             try:
                 import httpx
+
                 async with httpx.AsyncClient() as client:
                     response = await client.get("http://localhost:11434/api/tags", timeout=5.0)
                     if response.status_code != 200:
@@ -179,7 +167,6 @@ class TestIntegrationLiteLLMCompletion:
             assert response.completion.occupation.lower() == "software engineer"
             assert response.usage is not None
 
-
     @pytest.mark.integration
     @pytest.mark.asyncio
     async def test_openai_structured_completion(self, mock_config, structured_request):
@@ -188,7 +175,7 @@ class TestIntegrationLiteLLMCompletion:
         if not os.getenv("OPENAI_API_KEY"):
             pytest.skip("OpenAI API key not available")
 
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
             model = LiteLLMCompletionModel("test_openai")
@@ -202,23 +189,23 @@ class TestIntegrationLiteLLMCompletion:
             assert response.completion.occupation.lower() == "software engineer"
             assert response.usage is not None
 
-
     @pytest.mark.integration
     @pytest.mark.asyncio
     async def test_ollama_vision_completion(self, mock_config, vision_request):
         """Test vision completion with Ollama model."""
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
             # Skip if Ollama is not available
             try:
-                import ollama
+                pass
             except ImportError:
                 pytest.skip("Ollama library not available")
 
             # Check if Ollama service is running and vision model is available
             try:
                 import httpx
+
                 async with httpx.AsyncClient() as client:
                     response = await client.get("http://localhost:11434/api/tags", timeout=5.0)
                     if response.status_code != 200:
@@ -248,23 +235,23 @@ class TestIntegrationLiteLLMCompletion:
                 else:
                     raise
 
-
     @pytest.mark.integration
     @pytest.mark.asyncio
     async def test_ollama_streaming_completion(self, mock_config, streaming_request):
         """Test streaming completion with Ollama model."""
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
             # Skip if Ollama is not available
             try:
-                import ollama
+                pass
             except ImportError:
                 pytest.skip("Ollama library not available")
 
             # Check if Ollama service is running
             try:
                 import httpx
+
                 async with httpx.AsyncClient() as client:
                     response = await client.get("http://localhost:11434/api/tags", timeout=5.0)
                     if response.status_code != 200:
@@ -275,7 +262,7 @@ class TestIntegrationLiteLLMCompletion:
             model = LiteLLMCompletionModel("test_ollama")
             response_stream = await model.complete(streaming_request)
 
-            assert hasattr(response_stream, '__aiter__')
+            assert hasattr(response_stream, "__aiter__")
 
             chunks = []
             async for chunk in response_stream:
@@ -283,10 +270,9 @@ class TestIntegrationLiteLLMCompletion:
                 chunks.append(chunk)
 
             assert len(chunks) > 0
-            full_response = ''.join(chunks)
+            full_response = "".join(chunks)
             assert len(full_response) > 0
             assert "robot" in full_response.lower() or "story" in full_response.lower()
-
 
     @pytest.mark.integration
     @pytest.mark.asyncio
@@ -296,13 +282,13 @@ class TestIntegrationLiteLLMCompletion:
         if not os.getenv("OPENAI_API_KEY"):
             pytest.skip("OpenAI API key not available")
 
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
             model = LiteLLMCompletionModel("test_openai")
             response_stream = await model.complete(streaming_request)
 
-            assert hasattr(response_stream, '__aiter__')
+            assert hasattr(response_stream, "__aiter__")
 
             chunks = []
             async for chunk in response_stream:
@@ -310,10 +296,9 @@ class TestIntegrationLiteLLMCompletion:
                 chunks.append(chunk)
 
             assert len(chunks) > 0
-            full_response = ''.join(chunks)
+            full_response = "".join(chunks)
             assert len(full_response) > 0
             assert "robot" in full_response.lower() or "story" in full_response.lower()
-
 
     @pytest.mark.integration
     @pytest.mark.asyncio
@@ -332,11 +317,11 @@ class TestIntegrationLiteLLMCompletion:
             temperature=0.1,
             chat_history=[
                 ChatMessage(role="user", content="What is 2+2?"),
-                ChatMessage(role="assistant", content="2+2 equals 4.")
-            ]
+                ChatMessage(role="assistant", content="2+2 equals 4."),
+            ],
         )
 
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
             model = LiteLLMCompletionModel("test_openai")
@@ -346,7 +331,6 @@ class TestIntegrationLiteLLMCompletion:
             assert isinstance(response.completion, str)
             assert len(response.completion) > 0
             assert "2+2" in response.completion or "previous" in response.completion.lower()
-
 
     @pytest.mark.integration
     @pytest.mark.asyncio
@@ -361,10 +345,10 @@ class TestIntegrationLiteLLMCompletion:
             context_chunks=["The weather is sunny and warm."],
             max_tokens=100,
             temperature=0.1,
-            prompt_template="Context: {context}\nUser Question: {question}\nPlease provide a detailed answer:"
+            prompt_template="Context: {context}\nUser Question: {question}\nPlease provide a detailed answer:",
         )
 
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
             model = LiteLLMCompletionModel("test_openai")
@@ -375,7 +359,6 @@ class TestIntegrationLiteLLMCompletion:
             assert len(response.completion) > 0
             assert "sunny" in response.completion.lower() or "warm" in response.completion.lower()
 
-
     @pytest.mark.integration
     @pytest.mark.asyncio
     async def test_error_handling_invalid_model(self):
@@ -383,12 +366,11 @@ class TestIntegrationLiteLLMCompletion:
         with pytest.raises(ValueError, match="Model 'invalid_model' not found"):
             LiteLLMCompletionModel("invalid_model")
 
-
     @pytest.mark.integration
     @pytest.mark.asyncio
     async def test_error_handling_network_failure(self, mock_config, basic_request):
         """Test error handling for network failures."""
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
             # Test with invalid API base to simulate network failure
@@ -398,7 +380,6 @@ class TestIntegrationLiteLLMCompletion:
 
             with pytest.raises(Exception):
                 await model.complete(basic_request)
-
 
     @pytest.mark.integration
     @pytest.mark.asyncio
@@ -410,12 +391,8 @@ class TestIntegrationLiteLLMCompletion:
 
         schema = {
             "type": "object",
-            "properties": {
-                "title": {"type": "string"},
-                "author": {"type": "string"},
-                "year": {"type": "integer"}
-            },
-            "required": ["title", "author", "year"]
+            "properties": {"title": {"type": "string"}, "author": {"type": "string"}, "year": {"type": "integer"}},
+            "required": ["title", "author", "year"],
         }
 
         request = CompletionRequest(
@@ -423,19 +400,19 @@ class TestIntegrationLiteLLMCompletion:
             context_chunks=["The Great Gatsby was written by F. Scott Fitzgerald in 1925."],
             max_tokens=100,
             temperature=0.1,
-            schema=schema
+            schema=schema,
         )
 
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
             model = LiteLLMCompletionModel("test_openai")
             response = await model.complete(request)
 
             assert isinstance(response, CompletionResponse)
-            assert hasattr(response.completion, 'title')
-            assert hasattr(response.completion, 'author')
-            assert hasattr(response.completion, 'year')
+            assert hasattr(response.completion, "title")
+            assert hasattr(response.completion, "author")
+            assert hasattr(response.completion, "year")
             assert response.completion.title == "The Great Gatsby"
             assert response.completion.author == "F. Scott Fitzgerald"
             assert response.completion.year == 1925
@@ -450,13 +427,8 @@ class TestLiteLLMCompletionUnit:
         return {
             "llm": {
                 "registered_models": {
-                    "test_model": {
-                        "model_name": "gpt-4o-mini"
-                    },
-                    "test_ollama": {
-                        "model_name": "llama3.2:latest",
-                        "api_base": "http://localhost:11434"
-                    }
+                    "test_model": {"model_name": "gpt-4o-mini"},
+                    "test_ollama": {"model_name": "llama3.2:latest", "api_base": "http://localhost:11434"},
                 }
             }
         }
@@ -465,7 +437,7 @@ class TestLiteLLMCompletionUnit:
     @pytest.mark.asyncio
     async def test_model_initialization(self, mock_config):
         """Test model initialization with valid configuration."""
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
             model = LiteLLMCompletionModel("test_model")
@@ -476,10 +448,10 @@ class TestLiteLLMCompletionUnit:
     @pytest.mark.asyncio
     async def test_ollama_detection(self, mock_config):
         """Test Ollama model detection."""
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
-            with patch('cogent.providers.completion.litellm_completion.ollama') as mock_ollama:
+            with patch("cogent.base.providers.completion.litellm_completion.ollama") as mock_ollama:
                 mock_ollama.__version__ = "0.1.0"
 
                 model = LiteLLMCompletionModel("test_ollama")
@@ -491,10 +463,10 @@ class TestLiteLLMCompletionUnit:
     @pytest.mark.asyncio
     async def test_ollama_fallback_when_library_missing(self, mock_config):
         """Test fallback to LiteLLM when Ollama library is missing."""
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
-            with patch('cogent.providers.completion.litellm_completion.initialize_ollama_model') as mock_init:
+            with patch("cogent.base.providers.completion.litellm_completion.initialize_ollama_model") as mock_init:
                 # Mock the utility function to return False (fallback to LiteLLM)
                 mock_init.return_value = (False, None, None)
 
@@ -507,10 +479,10 @@ class TestLiteLLMCompletionUnit:
         """Test fallback to LiteLLM when Ollama API base is missing."""
         mock_config["llm"]["registered_models"]["test_ollama"].pop("api_base")
 
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
-            with patch('cogent.providers.completion.litellm_completion.initialize_ollama_model') as mock_init:
+            with patch("cogent.base.providers.completion.litellm_completion.initialize_ollama_model") as mock_init:
                 # Mock the utility function to return False (fallback to LiteLLM)
                 mock_init.return_value = (False, None, None)
 
@@ -521,10 +493,10 @@ class TestLiteLLMCompletionUnit:
     @pytest.mark.asyncio
     async def test_mocked_litellm_completion(self, mock_config):
         """Test completion with mocked LiteLLM."""
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
-            with patch('cogent.providers.completion.litellm_completion.litellm') as mock_litellm:
+            with patch("cogent.base.providers.completion.litellm_completion.litellm") as mock_litellm:
                 # Create proper mock objects with the expected structure
                 mock_usage = MagicMock()
                 mock_usage.prompt_tokens = 30
@@ -549,7 +521,7 @@ class TestLiteLLMCompletionUnit:
                     query="What is the capital of France?",
                     context_chunks=["Paris is the capital of France."],
                     max_tokens=100,
-                    temperature=0.1
+                    temperature=0.1,
                 )
 
                 response = await model.complete(request)
@@ -564,20 +536,22 @@ class TestLiteLLMCompletionUnit:
     @pytest.mark.asyncio
     async def test_mocked_ollama_completion(self, mock_config):
         """Test completion with mocked Ollama."""
-        with patch('cogent.providers.completion.litellm_completion.get_config') as mock_get_config:
+        with patch("cogent.base.providers.completion.litellm_completion.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.llm.registered_models = mock_config["llm"]["registered_models"]
 
-            with patch('cogent.providers.completion.litellm_completion.ollama') as mock_ollama:
+            with patch("cogent.base.providers.completion.litellm_completion.ollama") as mock_ollama:
                 mock_ollama.__version__ = "0.1.0"
 
                 # Create a proper mock client that can be awaited
                 mock_client = AsyncMock()
-                mock_client.chat = AsyncMock(return_value={
-                    "message": {"content": "Paris is the capital of France."},
-                    "prompt_eval_count": 30,
-                    "eval_count": 20,
-                    "done_reason": "stop"
-                })
+                mock_client.chat = AsyncMock(
+                    return_value={
+                        "message": {"content": "Paris is the capital of France."},
+                        "prompt_eval_count": 30,
+                        "eval_count": 20,
+                        "done_reason": "stop",
+                    }
+                )
 
                 # Mock the AsyncClient constructor to return our mock client
                 mock_ollama.AsyncClient = MagicMock(return_value=mock_client)
@@ -587,7 +561,7 @@ class TestLiteLLMCompletionUnit:
                     query="What is the capital of France?",
                     context_chunks=["Paris is the capital of France."],
                     max_tokens=100,
-                    temperature=0.1
+                    temperature=0.1,
                 )
 
                 response = await model.complete(request)

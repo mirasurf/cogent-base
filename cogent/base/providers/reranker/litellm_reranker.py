@@ -12,7 +12,7 @@ try:
 except ImportError:
     ollama = None  # Make ollama import optional
 
-from cogent.base.config import get_config
+from cogent.base.config import get_cogent_config
 from cogent.base.models.chunk import ObjectChunk
 from cogent.base.providers.reranker.base_reranker import BaseReranker
 from cogent.base.providers.utils import initialize_ollama_model
@@ -33,7 +33,7 @@ class LiteLLMReranker(BaseReranker):
         Args:
             model_key: The key of the model in the registered_rerankers config
         """
-        settings = get_config()
+        settings = get_cogent_config()
         self.model_key = model_key
 
         # Get the model configuration from registered_rerankers

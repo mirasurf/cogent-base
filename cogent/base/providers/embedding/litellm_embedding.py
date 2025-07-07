@@ -14,7 +14,7 @@ try:
 except ImportError:
     ollama = None  # Make ollama import optional
 
-from cogent.base.config import get_config
+from cogent.base.config import get_cogent_config
 from cogent.base.models.chunk import Chunk
 from cogent.base.providers.embedding.base_embedding import BaseEmbeddingModel
 from cogent.base.providers.utils import initialize_ollama_model
@@ -36,7 +36,7 @@ class LiteLLMEmbeddingModel(BaseEmbeddingModel):
         Args:
             model_key: The key of the model in the registered_models config
         """
-        settings = get_config()
+        settings = get_cogent_config()
         self.model_key = model_key
 
         # Get the model configuration from registered_models
@@ -179,7 +179,7 @@ class LiteLLMEmbeddingModel(BaseEmbeddingModel):
 
         texts = [chunk.content for chunk in chunks]
         # Batch embedding to respect token limits
-        settings = get_config()
+        settings = get_cogent_config()
         batch_size = settings.llm.embedding_batch_size
         embeddings: List[List[float]] = []
         for i in range(0, len(texts), batch_size):

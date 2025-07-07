@@ -2,10 +2,11 @@
 Unit tests for cogent.providers.utils module.
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
-from cogent.base.providers.utils import is_ollama_model, initialize_ollama_model
+import pytest
+
+from cogent.base.providers.utils import initialize_ollama_model, is_ollama_model
 
 
 class TestIsOllamaModel:
@@ -62,17 +63,14 @@ class TestInitializeOllamaModel:
     def test_ollama_model_with_library_available(self):
         """Test initialization with Ollama model when library is available."""
         model_key = "test_ollama"
-        model_config = {
-            "model_name": "ollama/llama3.2:latest",
-            "api_base": "http://localhost:11434"
-        }
+        model_config = {"model_name": "ollama/llama3.2:latest", "api_base": "http://localhost:11434"}
 
-        with patch('builtins.__import__') as mock_import:
+        with patch("builtins.__import__") as mock_import:
             # Mock successful import
             mock_ollama = MagicMock()
             mock_ollama.__version__ = "0.1.0"
             mock_import.return_value = mock_ollama
-            
+
             result = initialize_ollama_model(model_key, model_config)
 
             assert result == (True, "http://localhost:11434", "ollama/llama3.2:latest")
@@ -81,13 +79,10 @@ class TestInitializeOllamaModel:
     def test_ollama_model_library_missing(self):
         """Test initialization with Ollama model when library is missing."""
         model_key = "test_ollama"
-        model_config = {
-            "model_name": "ollama/llama3.2:latest",
-            "api_base": "http://localhost:11434"
-        }
+        model_config = {"model_name": "ollama/llama3.2:latest", "api_base": "http://localhost:11434"}
 
-        with patch('builtins.__import__', side_effect=ImportError("No module named 'ollama'")):
-            with patch('cogent.providers.utils.logger') as mock_logger:
+        with patch("builtins.__import__", side_effect=ImportError("No module named 'ollama'")):
+            with patch("cogent.base.providers.utils.logger") as mock_logger:
                 result = initialize_ollama_model(model_key, model_config)
 
                 assert result == (False, None, None)
@@ -101,13 +96,13 @@ class TestInitializeOllamaModel:
         model_key = "test_ollama"
         model_config = {"model_name": "ollama/llama3.2:latest"}
 
-        with patch('builtins.__import__') as mock_import:
+        with patch("builtins.__import__") as mock_import:
             # Mock successful import
             mock_ollama = MagicMock()
             mock_ollama.__version__ = "0.1.0"
             mock_import.return_value = mock_ollama
-            
-            with patch('cogent.providers.utils.logger') as mock_logger:
+
+            with patch("cogent.base.providers.utils.logger") as mock_logger:
                 result = initialize_ollama_model(model_key, model_config)
 
                 assert result == (False, None, None)
@@ -122,13 +117,13 @@ class TestInitializeOllamaModel:
         model_key = "test_ollama"
         model_config = {"api_base": "http://localhost:11434"}
 
-        with patch('builtins.__import__') as mock_import:
+        with patch("builtins.__import__") as mock_import:
             # Mock successful import
             mock_ollama = MagicMock()
             mock_ollama.__version__ = "0.1.0"
             mock_import.return_value = mock_ollama
-            
-            with patch('cogent.providers.utils.logger') as mock_logger:
+
+            with patch("cogent.base.providers.utils.logger") as mock_logger:
                 result = initialize_ollama_model(model_key, model_config)
 
                 assert result == (False, None, None)
@@ -141,18 +136,15 @@ class TestInitializeOllamaModel:
     def test_ollama_model_empty_model_name(self):
         """Test initialization with Ollama model when model_name is empty."""
         model_key = "test_ollama"
-        model_config = {
-            "model_name": "",
-            "api_base": "http://localhost:11434"
-        }
+        model_config = {"model_name": "", "api_base": "http://localhost:11434"}
 
-        with patch('builtins.__import__') as mock_import:
+        with patch("builtins.__import__") as mock_import:
             # Mock successful import
             mock_ollama = MagicMock()
             mock_ollama.__version__ = "0.1.0"
             mock_import.return_value = mock_ollama
-            
-            with patch('cogent.providers.utils.logger') as mock_logger:
+
+            with patch("cogent.base.providers.utils.logger") as mock_logger:
                 result = initialize_ollama_model(model_key, model_config)
 
                 assert result == (False, None, None)
@@ -165,18 +157,15 @@ class TestInitializeOllamaModel:
     def test_ollama_model_none_model_name(self):
         """Test initialization with Ollama model when model_name is None."""
         model_key = "test_ollama"
-        model_config = {
-            "model_name": None,
-            "api_base": "http://localhost:11434"
-        }
+        model_config = {"model_name": None, "api_base": "http://localhost:11434"}
 
-        with patch('builtins.__import__') as mock_import:
+        with patch("builtins.__import__") as mock_import:
             # Mock successful import
             mock_ollama = MagicMock()
             mock_ollama.__version__ = "0.1.0"
             mock_import.return_value = mock_ollama
-            
-            with patch('cogent.providers.utils.logger') as mock_logger:
+
+            with patch("cogent.base.providers.utils.logger") as mock_logger:
                 result = initialize_ollama_model(model_key, model_config)
 
                 assert result == (False, None, None)
@@ -193,15 +182,15 @@ class TestInitializeOllamaModel:
             "model_name": "ollama/llama3.2:latest",
             "api_base": "http://localhost:11434",
             "temperature": 0.7,
-            "max_tokens": 1000
+            "max_tokens": 1000,
         }
 
-        with patch('builtins.__import__') as mock_import:
+        with patch("builtins.__import__") as mock_import:
             # Mock successful import
             mock_ollama = MagicMock()
             mock_ollama.__version__ = "0.1.0"
             mock_import.return_value = mock_ollama
-            
+
             result = initialize_ollama_model(model_key, model_config)
 
             assert result == (True, "http://localhost:11434", "ollama/llama3.2:latest")
@@ -210,17 +199,14 @@ class TestInitializeOllamaModel:
     def test_ollama_model_case_insensitive_detection(self):
         """Test that Ollama detection is case insensitive."""
         model_key = "TEST_OLLAMA"
-        model_config = {
-            "model_name": "OLLAMA/llama3.2:latest",
-            "api_base": "http://localhost:11434"
-        }
+        model_config = {"model_name": "OLLAMA/llama3.2:latest", "api_base": "http://localhost:11434"}
 
-        with patch('builtins.__import__') as mock_import:
+        with patch("builtins.__import__") as mock_import:
             # Mock successful import
             mock_ollama = MagicMock()
             mock_ollama.__version__ = "0.1.0"
             mock_import.return_value = mock_ollama
-            
+
             result = initialize_ollama_model(model_key, model_config)
 
             assert result == (True, "http://localhost:11434", "OLLAMA/llama3.2:latest")
@@ -229,16 +215,13 @@ class TestInitializeOllamaModel:
     def test_ollama_model_import_error_simulation(self):
         """Test initialization when ollama import raises ImportError."""
         model_key = "test_ollama"
-        model_config = {
-            "model_name": "ollama/llama3.2:latest",
-            "api_base": "http://localhost:11434"
-        }
+        model_config = {"model_name": "ollama/llama3.2:latest", "api_base": "http://localhost:11434"}
 
-        with patch('builtins.__import__', side_effect=ImportError("No module named 'ollama'")):
-            with patch('cogent.providers.utils.logger') as mock_logger:
+        with patch("builtins.__import__", side_effect=ImportError("No module named 'ollama'")):
+            with patch("cogent.base.providers.utils.logger") as mock_logger:
                 result = initialize_ollama_model(model_key, model_config)
 
                 assert result == (False, None, None)
                 mock_logger.warning.assert_called_once_with(
                     "Ollama model selected, but 'ollama' library not installed. Falling back to LiteLLM."
-                ) 
+                )

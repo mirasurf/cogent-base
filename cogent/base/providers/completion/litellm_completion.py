@@ -16,7 +16,7 @@ except ImportError:
 
 from pydantic import BaseModel
 
-from cogent.base.config import get_config
+from cogent.base.config import get_cogent_config
 from cogent.base.models.completion import CompletionRequest, CompletionResponse
 from cogent.base.providers.utils import initialize_ollama_model
 
@@ -157,7 +157,7 @@ class LiteLLMCompletionModel(BaseCompletionModel):
         Args:
             model_key: The key of the model in the registered_models config
         """
-        settings = get_config()
+        settings = get_cogent_config()
         self.model_key = model_key
 
         # Get the model configuration from registered_models

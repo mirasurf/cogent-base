@@ -1,92 +1,148 @@
 """
-Global logging configuration for Cogent.
-Provides a centralized logging setup with file and console output.
+Basic logging utilities for Cogent.
+Provides a simple logging setup that can be overridden by downstream libraries.
 """
 
 import logging
-import logging.handlers
 import sys
 from pathlib import Path
 from typing import Optional
 
-from cogent.base.config import get_config
 
-
-def setup_cogent_logger(
+def get_basic_logger(
     name: str = "cogent",
-    log_dir: Optional[Path] = None,
-    log_level: Optional[str] = None,
-    log_format: Optional[str] = None,
+    level: str = "INFO",
+    format_string: Optional[str] = None,
+    handlers: Optional[list] = None,
 ) -> logging.Logger:
     """
-    Set up the global Cogent logger with file and console handlers.
+    Get a basic logger with minimal configuration.
+
+    This function provides a basic logging setup that downstream libraries can extend.
+    It doesn't create file handlers or complex configurations by default.
 
     Args:
         name: Logger name, defaults to "cogent"
-        log_dir: Directory for log files, defaults to config value
-        log_level: Logging level, defaults to config value
-        log_format: Log format string, defaults to config value
+        level: Logging level, defaults to "INFO"
+        format_string: Custom format string, if None uses basic format
+        handlers: Custom handlers list, if None creates basic console handler
 
     Returns:
         Configured logger instance
     """
-    # Get configuration
-    config = get_config()
-
-    # Use provided values or fall back to config defaults
-    log_dir = log_dir or config.log_dir
-    log_level = log_level or config.log_level
-    log_format = log_format or config.log_format
-
-    # Create log directory if it doesn't exist
-    log_dir.mkdir(parents=True, exist_ok=True)
-
-    # Get logger
     logger = logging.getLogger(name)
 
-    # Avoid adding handlers multiple times
+    # Avoid reconfiguring if logger already has handlers
     if logger.handlers:
         return logger
 
     # Set log level
-    level = getattr(logging, log_level.upper(), logging.INFO)
-    logger.setLevel(level)
+    log_level = getattr(logging, level.upper(), logging.INFO)
+    logger.setLevel(log_level)
 
-    # Create formatter
-    formatter = logging.Formatter(log_format)
+    # Use provided format or basic format
+    if format_string is None:
+        format_string = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
-    # Console handler
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(level)
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
+    formatter = logging.Formatter(format_string)
 
-    # File handler with rotation
-    log_file = log_dir / "cogent.log"
-    file_handler = logging.handlers.RotatingFileHandler(
-        log_file, maxBytes=10 * 1024 * 1024, backupCount=5, encoding="utf-8"  # 10MB
-    )
-    file_handler.setLevel(level)
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
+    # Use provided handlers or create basic console handler
+    if handlers is None:
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(log_level)
+        console_handler.setFormatter(formatter)
+        handlers = [console_handler]
 
-    # Error file handler for ERROR and above
-    error_log_file = log_dir / "cogent_error.log"
-    error_handler = logging.handlers.RotatingFileHandler(
-        error_log_file, maxBytes=10 * 1024 * 1024, backupCount=5, encoding="utf-8"  # 10MB
-    )
-    error_handler.setLevel(logging.ERROR)
-    error_handler.setFormatter(formatter)
-    logger.addHandler(error_handler)
-
-    logger.info(f"Cogent logger initialized - Level: {log_level}, Log dir: {log_dir}")
+    # Add handlers
+    for handler in handlers:
+        logger.addHandler(handler)
 
     return logger
 
 
-def get_cogent_logger(name: str = "cogent") -> logging.Logger:
+def setup_logger_with_handlers(
+    name: str = "cogent",
+    level: str = "INFO",
+    format_string: Optional[str] = None,
+    log_dir: Optional[Path] = None,
+    enable_file_logging: bool = False,
+    enable_error_file: bool = False,
+    max_bytes: int = 10 * 1024 * 1024,  # 10MB
+    backup_count: int = 5,
+) -> logging.Logger:
     """
-    Get the global Cogent logger instance.
+    Set up a logger with file handlers for downstream libraries that need them.
+
+    This function provides more comprehensive logging setup for libraries that
+    need file logging, rotation, etc. It's not used by default in cogent-base.
+
+    Args:
+        name: Logger name
+        level: Logging level
+        format_string: Custom format string
+        log_dir: Directory for log files
+        enable_file_logging: Whether to enable general file logging
+        enable_error_file: Whether to enable separate error file logging
+        max_bytes: Maximum bytes per log file
+        backup_count: Number of backup files to keep
+
+    Returns:
+        Configured logger instance
+    """
+    import logging.handlers
+
+    logger = get_basic_logger(name, level, format_string)
+
+    # Remove existing handlers to avoid duplicates
+    for handler in logger.handlers[:]:
+        logger.removeHandler(handler)
+
+    log_level = getattr(logging, level.upper(), logging.INFO)
+
+    # Use provided format or basic format
+    if format_string is None:
+        format_string = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+    formatter = logging.Formatter(format_string)
+
+    # Console handler
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(log_level)
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
+
+    if enable_file_logging and log_dir:
+        # Create log directory if it doesn't exist
+        log_dir.mkdir(parents=True, exist_ok=True)
+
+        # General log file
+        log_file = log_dir / f"{name}.log"
+        file_handler = logging.handlers.RotatingFileHandler(
+            log_file, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8"
+        )
+        file_handler.setLevel(log_level)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+
+        # Error log file
+        if enable_error_file:
+            error_log_file = log_dir / f"{name}_error.log"
+            error_handler = logging.handlers.RotatingFileHandler(
+                error_log_file, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8"
+            )
+            error_handler.setLevel(logging.ERROR)
+            error_handler.setFormatter(formatter)
+            logger.addHandler(error_handler)
+
+    return logger
+
+
+def get_logger(name: str = "cogent") -> logging.Logger:
+    """
+    Get a logger instance.
+
+    This is the main entry point for getting loggers in cogent-base.
+    It provides a basic logger that downstream libraries can extend.
 
     Args:
         name: Logger name, defaults to "cogent"
@@ -94,14 +150,18 @@ def get_cogent_logger(name: str = "cogent") -> logging.Logger:
     Returns:
         Logger instance
     """
-    logger = logging.getLogger(name)
-
-    # If logger doesn't have handlers, set it up
-    if not logger.handlers:
-        setup_cogent_logger(name)
-
-    return logger
+    return get_basic_logger(name)
 
 
-# Initialize the global logger when module is imported
-_cogent_logger = setup_cogent_logger()
+# Legacy function for backward compatibility
+def get_cogent_logger(name: str = "cogent") -> logging.Logger:
+    """
+    Get the Cogent logger instance (legacy function).
+
+    Args:
+        name: Logger name, defaults to "cogent"
+
+    Returns:
+        Logger instance
+    """
+    return get_logger(name)

@@ -10,6 +10,6 @@ def get_cogent_version() -> str:
             version = next(line for line in pyproject_toml if line.startswith("version")).split("=")[1].strip("'\"\n ")
             return f"{version}-trunk"
     try:
-        return importlib.metadata.version("cogent")
+        return importlib.metadata.version("cogent-base")
     except importlib.metadata.PackageNotFoundError:
         return "unknown"

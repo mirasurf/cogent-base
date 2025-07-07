@@ -1,9 +1,8 @@
 """
 Cogent package initialization.
-Initializes the global logger on import.
+Provides basic logging utilities for downstream libraries.
 """
 
-from logger import get_cogent_logger
+from .logger import get_basic_logger, get_logger, setup_logger_with_handlers
 
-# Initialize the global logger
-get_cogent_logger()
+__all__ = ["get_logger", "get_basic_logger", "setup_logger_with_handlers"]

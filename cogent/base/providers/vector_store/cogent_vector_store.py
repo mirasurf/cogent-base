@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-from cogent.base.config import get_config
+from cogent.base.config import get_cogent_config
 from cogent.base.providers.vector_store.base_vector_store import VectorStoreBase
 
 logger = logging.getLogger(__name__)
@@ -15,7 +15,7 @@ class CogentVectorStore(VectorStoreBase):
         Args:
             store_key: The key of the store in the registered_vector_stores config
         """
-        settings = get_config()
+        settings = get_cogent_config()
         self.store_key = store_key
         self.store_impl: Optional[VectorStoreBase] = None
 
@@ -34,7 +34,9 @@ class CogentVectorStore(VectorStoreBase):
         self.embedding_model_dims = settings.vector_store.embedding_model_dims
 
         if self.provider == "pgvector":
-            from cogent.base.providers.vector_store.pgvector_vector_store import PGVector
+            from cogent.base.providers.vector_store.pgvector_vector_store import (
+                PGVector,
+            )
 
             self.store_impl = PGVector(
                 dbname=self.store_config["dbname"],
@@ -46,7 +48,9 @@ class CogentVectorStore(VectorStoreBase):
                 hnsw=self.store_config["hnsw"],
             )
         elif self.provider == "weaviate":
-            from cogent.base.providers.vector_store.weaviate_vector_store import Weaviate
+            from cogent.base.providers.vector_store.weaviate_vector_store import (
+                Weaviate,
+            )
 
             self.store_impl = Weaviate(
                 collection_name=self.collection_name,

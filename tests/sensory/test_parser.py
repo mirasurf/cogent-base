@@ -2,12 +2,9 @@
 Unit tests for CogentParser class.
 """
 
-import io
-import tempfile
-from unittest.mock import AsyncMock, MagicMock, Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
-from unstructured.documents.elements import Text
 
 from cogent.base.models.chunk import Chunk
 from cogent.base.sensory.parser.base_parser import ParsedElement
@@ -89,7 +86,7 @@ class TestCogentParser:
         assert parser._assemblyai_api_key == "test_assemblyai_key"
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.filetype")
+    @patch("cogent.base.sensory.parser.cogent_parser.filetype")
     def test_is_video_file_true(self, mock_filetype, parser):
         """Test video file detection for actual video files."""
         mock_kind = Mock()
@@ -100,7 +97,7 @@ class TestCogentParser:
         assert result is True
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.filetype")
+    @patch("cogent.base.sensory.parser.cogent_parser.filetype")
     def test_is_video_file_false(self, mock_filetype, parser):
         """Test video file detection for non-video files."""
         mock_kind = Mock()
@@ -111,7 +108,7 @@ class TestCogentParser:
         assert result is False
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.filetype")
+    @patch("cogent.base.sensory.parser.cogent_parser.filetype")
     def test_is_video_file_none_kind(self, mock_filetype, parser):
         """Test video file detection when filetype.guess returns None."""
         mock_filetype.guess.return_value = None
@@ -120,7 +117,7 @@ class TestCogentParser:
         assert result is False
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.filetype")
+    @patch("cogent.base.sensory.parser.cogent_parser.filetype")
     def test_is_video_file_exception(self, mock_filetype, parser):
         """Test video file detection with exception handling."""
         mock_filetype.guess.side_effect = ValueError("Test error")
@@ -129,10 +126,10 @@ class TestCogentParser:
         assert result is False
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.VideoParser")
-    @patch("cogent.sensory.parser.cogent_parser.get_config")
-    @patch("cogent.sensory.parser.cogent_parser.tempfile")
-    @patch("cogent.sensory.parser.cogent_parser.os")
+    @patch("cogent.base.sensory.parser.cogent_parser.VideoParser")
+    @patch("cogent.base.sensory.parser.cogent_parser.get_cogent_config")
+    @patch("cogent.base.sensory.parser.cogent_parser.tempfile")
+    @patch("cogent.base.sensory.parser.cogent_parser.os")
     async def test_parse_video_success(self, mock_os, mock_tempfile, mock_get_config, mock_video_parser, parser):
         """Test successful video parsing."""
         # Mock temporary file
@@ -141,13 +138,7 @@ class TestCogentParser:
         mock_tempfile.NamedTemporaryFile.return_value = mock_temp_file
 
         # Mock config
-        mock_config = {
-            "parser": {
-                "vision": {
-                    "frame_sample_rate": 30
-                }
-            }
-        }
+        mock_config = {"parser": {"vision": {"frame_sample_rate": 30}}}
         mock_get_config.return_value = mock_config
 
         # Mock video parser results
@@ -185,7 +176,7 @@ class TestCogentParser:
             await parser._parse_video(b"fake_video_content")
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.partition")
+    @patch("cogent.base.sensory.parser.cogent_parser.partition")
     async def test_parse_object_success(self, mock_partition, parser):
         """Test successful object parsing."""
         # Mock unstructured partition results
@@ -230,7 +221,7 @@ class TestCogentParser:
         assert call_args[1]["api_key"] is None  # use_unstructured_api is False
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.partition")
+    @patch("cogent.base.sensory.parser.cogent_parser.partition")
     async def test_parse_object_txt_file(self, mock_partition, parser):
         """Test object parsing for text files."""
         mock_partition.return_value = []
@@ -242,7 +233,7 @@ class TestCogentParser:
         assert call_args[1]["content_type"] == "text/plain"
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.partition")
+    @patch("cogent.base.sensory.parser.cogent_parser.partition")
     async def test_parse_object_json_file(self, mock_partition, parser):
         """Test object parsing for JSON files."""
         mock_partition.return_value = []
@@ -254,13 +245,10 @@ class TestCogentParser:
         assert call_args[1]["content_type"] == "application/json"
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.partition")
+    @patch("cogent.base.sensory.parser.cogent_parser.partition")
     async def test_parse_object_with_unstructured_api(self, mock_partition):
         """Test object parsing with unstructured API enabled."""
-        parser = CogentParser(
-            use_unstructured_api=True,
-            unstructured_api_key="test_key"
-        )
+        parser = CogentParser(use_unstructured_api=True, unstructured_api_key="test_key")
         mock_partition.return_value = []
 
         await parser._parse_object(b"fake_content", "test.pdf")
@@ -269,7 +257,7 @@ class TestCogentParser:
         assert call_args[1]["api_key"] == "test_key"
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.filetype")
+    @patch("cogent.base.sensory.parser.cogent_parser.filetype")
     async def test_parse_file_to_text_video(self, mock_filetype, parser):
         """Test parse_file_to_text for video files."""
         # Mock video detection
@@ -280,15 +268,15 @@ class TestCogentParser:
         # Mock video parsing
         with patch.object(parser, "_parse_video") as mock_parse_video:
             mock_parse_video.return_value = ({}, [ParsedElement(text="video content")])
-            
+
             metadata, elements = await parser.parse_file_to_text(b"fake_video", "test.mp4")
-            
+
             mock_parse_video.assert_called_once_with(b"fake_video")
             assert len(elements) == 1
             assert elements[0].text == "video content"
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.filetype")
+    @patch("cogent.base.sensory.parser.cogent_parser.filetype")
     async def test_parse_file_to_text_object(self, mock_filetype, parser):
         """Test parse_file_to_text for non-video files."""
         # Mock non-video detection
@@ -299,9 +287,9 @@ class TestCogentParser:
         # Mock object parsing
         with patch.object(parser, "_parse_object") as mock_parse_object:
             mock_parse_object.return_value = ({}, [ParsedElement(text="text content")])
-            
+
             metadata, elements = await parser.parse_file_to_text(b"fake_text", "test.txt")
-            
+
             mock_parse_object.assert_called_once_with(b"fake_text", "test.txt")
             assert len(elements) == 1
             assert elements[0].text == "text content"
@@ -310,25 +298,25 @@ class TestCogentParser:
     async def test_split_text_standard_chunking(self, parser):
         """Test text splitting with standard chunking."""
         text = "This is a test text that should be split into chunks. " * 10
-        
+
         chunks = await parser.split_text(text)
-        
+
         assert isinstance(chunks, list)
         assert all(isinstance(chunk, Chunk) for chunk in chunks)
         assert len(chunks) > 0
 
     @pytest.mark.unit
-    @patch("cogent.sensory.chunker.contextual_chunker.ContextualChunker")
+    @patch("cogent.base.sensory.chunker.contextual_chunker.ContextualChunker")
     async def test_split_text_contextual_chunking(self, mock_contextual_chunker_class, contextual_parser):
         """Test text splitting with contextual chunking."""
         # Mock the contextual chunker to avoid ChatMessage validation issues
         mock_chunker = AsyncMock()
         mock_chunker.split_text.return_value = [
             Chunk(content="Contextualized chunk 1", metadata={}),
-            Chunk(content="Contextualized chunk 2", metadata={})
+            Chunk(content="Contextualized chunk 2", metadata={}),
         ]
         mock_contextual_chunker_class.return_value = mock_chunker
-        
+
         # Create a new parser with mocked contextual chunker
         parser = CogentParser(
             chunk_size=1000,
@@ -337,11 +325,11 @@ class TestCogentParser:
             assemblyai_api_key="test_key",
         )
         parser.chunker = mock_chunker
-        
+
         text = "This is a test text that should be split into chunks. " * 10
-        
+
         chunks = await parser.split_text(text)
-        
+
         assert isinstance(chunks, list)
         assert all(isinstance(chunk, Chunk) for chunk in chunks)
         assert len(chunks) == 2
@@ -352,7 +340,7 @@ class TestCogentParser:
     async def test_split_text_empty(self, parser):
         """Test text splitting with empty text."""
         chunks = await parser.split_text("")
-        
+
         assert isinstance(chunks, list)
         assert len(chunks) == 0
 
@@ -360,19 +348,21 @@ class TestCogentParser:
     async def test_split_text_short(self, parser):
         """Test text splitting with text shorter than chunk size."""
         text = "Short text"
-        
+
         chunks = await parser.split_text(text)
-        
+
         assert isinstance(chunks, list)
         assert len(chunks) == 1
         assert chunks[0].content == text
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.VideoParser")
-    @patch("cogent.sensory.parser.cogent_parser.get_config")
-    @patch("cogent.sensory.parser.cogent_parser.tempfile")
-    @patch("cogent.sensory.parser.cogent_parser.os")
-    async def test_parse_video_cleanup_on_exception(self, mock_os, mock_tempfile, mock_get_config, mock_video_parser, parser):
+    @patch("cogent.base.sensory.parser.cogent_parser.VideoParser")
+    @patch("cogent.base.sensory.parser.cogent_parser.get_cogent_config")
+    @patch("cogent.base.sensory.parser.cogent_parser.tempfile")
+    @patch("cogent.base.sensory.parser.cogent_parser.os")
+    async def test_parse_video_cleanup_on_exception(
+        self, mock_os, mock_tempfile, mock_get_config, mock_video_parser, parser
+    ):
         """Test that temporary files are cleaned up even when exceptions occur."""
         # Mock temporary file
         mock_temp_file = Mock()
@@ -397,11 +387,13 @@ class TestCogentParser:
         mock_os.unlink.assert_called_once_with("/tmp/test_video.mp4")
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.VideoParser")
-    @patch("cogent.sensory.parser.cogent_parser.get_config")
-    @patch("cogent.sensory.parser.cogent_parser.tempfile")
-    @patch("cogent.sensory.parser.cogent_parser.os")
-    async def test_parse_video_cleanup_file_not_exists(self, mock_os, mock_tempfile, mock_get_config, mock_video_parser, parser):
+    @patch("cogent.base.sensory.parser.cogent_parser.VideoParser")
+    @patch("cogent.base.sensory.parser.cogent_parser.get_cogent_config")
+    @patch("cogent.base.sensory.parser.cogent_parser.tempfile")
+    @patch("cogent.base.sensory.parser.cogent_parser.os")
+    async def test_parse_video_cleanup_file_not_exists(
+        self, mock_os, mock_tempfile, mock_get_config, mock_video_parser, parser
+    ):
         """Test cleanup when temporary file doesn't exist."""
         # Mock temporary file
         mock_temp_file = Mock()
@@ -430,11 +422,13 @@ class TestCogentParser:
         mock_os.unlink.assert_not_called()
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.VideoParser")
-    @patch("cogent.sensory.parser.cogent_parser.get_config")
-    @patch("cogent.sensory.parser.cogent_parser.tempfile")
-    @patch("cogent.sensory.parser.cogent_parser.os")
-    async def test_parse_video_cleanup_os_error(self, mock_os, mock_tempfile, mock_get_config, mock_video_parser, parser):
+    @patch("cogent.base.sensory.parser.cogent_parser.VideoParser")
+    @patch("cogent.base.sensory.parser.cogent_parser.get_cogent_config")
+    @patch("cogent.base.sensory.parser.cogent_parser.tempfile")
+    @patch("cogent.base.sensory.parser.cogent_parser.os")
+    async def test_parse_video_cleanup_os_error(
+        self, mock_os, mock_tempfile, mock_get_config, mock_video_parser, parser
+    ):
         """Test cleanup when os.unlink raises an error."""
         # Mock temporary file
         mock_temp_file = Mock()
@@ -465,7 +459,7 @@ class TestCogentParser:
         mock_os.unlink.assert_called_once_with("/tmp/test_video.mp4")
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.partition")
+    @patch("cogent.base.sensory.parser.cogent_parser.partition")
     async def test_parse_object_empty_file(self, mock_partition, parser):
         """Test object parsing with empty file."""
         mock_partition.return_value = []
@@ -476,7 +470,7 @@ class TestCogentParser:
         assert metadata == {}
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.partition")
+    @patch("cogent.base.sensory.parser.cogent_parser.partition")
     async def test_parse_object_metadata_none(self, mock_partition, parser):
         """Test object parsing when metadata is None."""
         mock_part = Mock()
@@ -496,7 +490,7 @@ class TestCogentParser:
         assert elements[0].page_number == 0
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.partition")
+    @patch("cogent.base.sensory.parser.cogent_parser.partition")
     async def test_parse_object_missing_text_as_html(self, mock_partition, parser):
         """Test object parsing when text_as_html is not available."""
         mock_part = Mock()
@@ -517,7 +511,7 @@ class TestCogentParser:
         assert elements[0].text_html == ""  # Should have default value
 
     @pytest.mark.unit
-    @patch("cogent.sensory.parser.cogent_parser.filetype")
+    @patch("cogent.base.sensory.parser.cogent_parser.filetype")
     async def test_parse_file_to_text_unknown_file_type(self, mock_filetype, parser):
         """Test parse_file_to_text for unknown file types."""
         # Mock filetype.guess to return None (unknown type)
@@ -526,9 +520,9 @@ class TestCogentParser:
         # Mock object parsing
         with patch.object(parser, "_parse_object") as mock_parse_object:
             mock_parse_object.return_value = ({}, [ParsedElement(text="unknown content")])
-            
+
             metadata, elements = await parser.parse_file_to_text(b"unknown_content", "test.unknown")
-            
+
             mock_parse_object.assert_called_once_with(b"unknown_content", "test.unknown")
             assert len(elements) == 1
             assert elements[0].text == "unknown content"
@@ -537,10 +531,13 @@ class TestCogentParser:
     async def test_split_text_very_long_text(self, parser):
         """Test text splitting with very long text."""
         # Create a very long text that will definitely be split
-        text = "This is a very long sentence that will be repeated many times to create a text that exceeds the chunk size limit. " * 100
-        
+        text = (
+            "This is a very long sentence that will be repeated many times to create a text that exceeds the chunk size limit. "
+            * 100
+        )
+
         chunks = await parser.split_text(text)
-        
+
         assert isinstance(chunks, list)
         assert all(isinstance(chunk, Chunk) for chunk in chunks)
         assert len(chunks) > 1  # Should be split into multiple chunks
@@ -549,9 +546,9 @@ class TestCogentParser:
     async def test_split_text_with_special_characters(self, parser):
         """Test text splitting with special characters and unicode."""
         text = "Special chars: ñáéíóú 🚀 🌟 💻 \n\n New paragraph with emojis! 🎉"
-        
+
         chunks = await parser.split_text(text)
-        
+
         assert isinstance(chunks, list)
         assert all(isinstance(chunk, Chunk) for chunk in chunks)
         assert len(chunks) > 0

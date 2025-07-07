@@ -8,7 +8,7 @@ import cv2
 import litellm
 import tomli
 
-from cogent.base.config import get_config
+from cogent.base.config import get_cogent_config
 from cogent.base.models.video import ParseVideoResult, TimeSeriesData
 
 logger = logging.getLogger(__name__)
@@ -28,7 +28,7 @@ class VisionModelClient:
     def __init__(self, config: Dict[str, Any]):
         self.config = config["parser"]["vision"]
         self.model_key = self.config.get("model")
-        self.settings = get_config()
+        self.settings = get_cogent_config()
 
         # Get the model configuration from registered_models
         if (
