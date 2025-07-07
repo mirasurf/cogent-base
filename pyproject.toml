@@ -6,7 +6,7 @@ authors = [
     { name = "xmingc", email = "chenxm35@gmail.com" }
 ]
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
     "python-dotenv>=1.0.1",
     "pydantic>=2.8.0",
@@ -16,7 +16,6 @@ dependencies = [
     "FlagEmbedding>=1.2.0",
     "unstructured>=0.18.0",
     "filetype>=1.2.0",
-    "tomli>=2.0.0",
     "opencv-python>=4.9.0",
     "assemblyai>=0.21.0",
     "weaviate-client>=4.15.0",
@@ -64,7 +63,7 @@ asyncio_mode = "auto"
 
 [tool.black]
 line-length = 120
-target-version = ['py39']
+target-version = ['py311']
 include = '\.pyi?$'
 
 [tool.isort]

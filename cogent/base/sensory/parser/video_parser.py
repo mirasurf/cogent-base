@@ -1,12 +1,12 @@
 import base64
 import logging
 import os
+import tomllib
 from typing import Any, Dict, Optional
 
 import assemblyai as aai
 import cv2
 import litellm
-import tomli
 
 from cogent.base.config import get_cogent_config
 from cogent.base.models.video import ParseVideoResult, TimeSeriesData
@@ -21,7 +21,7 @@ def debug_object(title, obj):
 def load_config() -> Dict[str, Any]:
     config_path = os.path.join(os.path.dirname(__file__), "../../../cogent.toml")
     with open(config_path, "rb") as f:
-        return tomli.load(f)
+        return tomllib.load(f)
 
 
 class VisionModelClient:

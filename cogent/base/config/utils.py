@@ -4,17 +4,16 @@ Provides TOML loading and helper functions for configuration management.
 """
 
 import copy
+import tomllib
 from pathlib import Path
 from typing import Any, Dict, List, Mapping
-
-import tomli
 
 
 def load_toml_config(toml_path: Path) -> Dict[str, Any]:
     """Load configuration from TOML file."""
     try:
         with open(toml_path, "rb") as f:
-            return tomli.load(f)
+            return tomllib.load(f)
     except FileNotFoundError:
         print(f"Warning: TOML config file not found at {toml_path}")
         return {}

@@ -16,7 +16,7 @@ A shared Python module for agentic cognitive computing frameworks, providing ext
 
 ## Installation
 
-**Requirements**: Python 3.9+
+**Requirements**: Python 3.11+
 
 ```bash
 pip install cogent-base
