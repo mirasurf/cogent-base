@@ -13,17 +13,16 @@ from cogent.base.config import (
     get_cogent_config,
     toml_config,
 )
-from cogent.base.rootdir import ROOT_DIR
 
 
 class TestCogentBaseConfig(unittest.TestCase):
     """Test the CogentBaseConfig class."""
 
     @pytest.mark.unit
-    @patch("cogent.base.config.load_merged_toml_configs")
-    def test_default_values(self, mock_load_merged):
+    @patch("cogent.base.config.main.load_toml_config")
+    def test_default_values(self, mock_load_toml):
         """Test CogentBaseConfig default values."""
-        mock_load_merged.return_value = {}
+        mock_load_toml.return_value = {}
         config = CogentBaseConfig()
 
         self.assertEqual(config.env, "development")
@@ -34,18 +33,19 @@ class TestCogentBaseConfig(unittest.TestCase):
         self.assertIsInstance(config.sensory, BaseConfig)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_merged_toml_configs")
-    def test_load_merged_toml_configs_called(self, mock_load_merged):
-        """Test that load_merged_toml_configs is called during initialization."""
-        mock_load_merged.return_value = {}
+    @patch("cogent.base.config.main.load_toml_config")
+    def test_load_toml_config_called(self, mock_load_toml):
+        """Test that load_toml_config is called during initialization."""
+        mock_load_toml.return_value = {}
         CogentBaseConfig()
-        mock_load_merged.assert_called_once()
+        # Should be called twice: once for package defaults, once for user runtime
+        self.assertEqual(mock_load_toml.call_count, 2)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.main.load_merged_toml_configs")
-    def test_load_merged_toml_configs_with_data(self, mock_load_merged):
+    @patch("cogent.base.config.main.load_toml_config")
+    def test_load_toml_config_with_data(self, mock_load_toml):
         """Test CogentBaseConfig with TOML data."""
-        mock_load_merged.return_value = {
+        mock_load_toml.return_value = {
             "completion": {"model": "test_model"},
             "embedding": {"dimensions": 1024},
             "vector_store": {"provider": "test_provider"},
@@ -61,19 +61,10 @@ class TestCogentBaseConfig(unittest.TestCase):
         self.assertEqual(config.sensory.chunk_size, 8000)
 
     @pytest.mark.unit
-    @patch("cogent.base.config.load_merged_toml_configs")
-    def test_config_paths(self, mock_load_merged):
-        """Test that config paths are set correctly."""
-        mock_load_merged.return_value = {}
-        config = CogentBaseConfig()
-
-        self.assertEqual(config.base_toml, ROOT_DIR / "config" / "base.toml")
-
-    @pytest.mark.unit
-    @patch("cogent.base.config.load_merged_toml_configs")
-    def test_register_config(self, mock_load_merged):
+    @patch("cogent.base.config.main.load_toml_config")
+    def test_register_config(self, mock_load_toml):
         """Test registering a new configuration."""
-        mock_load_merged.return_value = {}
+        mock_load_toml.return_value = {}
         config = CogentBaseConfig()
 
         # Create a custom config

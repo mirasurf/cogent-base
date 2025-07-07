@@ -45,12 +45,12 @@ llm_config = config.llm
 vector_store_config = config.vector_store
 ```
 
-### Custom Configuration
+### Extending CogentBaseConfig
 
-Create a custom configuration class:
+Create a custom configuration class that extends `CogentBaseConfig`:
 
 ```python
-from cogent.base.config import BaseConfig, toml_config
+from cogent.base.config import CogentBaseConfig, BaseConfig, toml_config
 
 @toml_config("agent")
 class AgentConfig(BaseConfig):
@@ -59,48 +59,67 @@ class AgentConfig(BaseConfig):
     timeout: int = 30
     enable_memory: bool = True
 
-# Register with the global config
-config = get_cogent_config()
-agent_config = AgentConfig()
-config.register_config("agent", agent_config)
-```
+class MyCogentConfig(CogentBaseConfig):
+    def _load_default_configs(self):
+        # Load parent configs
+        super()._load_default_configs()
+        # Add custom configs
+        self.register_config("agent", AgentConfig())
 
-### TOML Configuration
-
-Create a TOML file for your custom configuration:
-
-```toml
-# config/agent.toml
-[agent]
-name = "my_custom_agent"
-max_conversations = 20
-timeout = 60
-enable_memory = false
-```
-
-The configuration will be automatically loaded and merged with your registered config.
-
-### Logging
-
-Cogent-base provides basic logging utilities that can be extended:
-
-```python
-from cogent.base.logger import get_logger, setup_logger_with_handlers
-
-# Basic logger
-logger = get_logger("my_module")
-
-# Advanced logger with file handlers
-logger = setup_logger_with_handlers(
-    name="my_module",
-    level="DEBUG",
-    log_dir=Path("./logs"),
-    enable_file_logging=True,
-    enable_error_file=True
-)
+# Use your extended config
+config = MyCogentConfig()
+agent_config = config.get_config("agent")
 ```
 
 ## Configuration System
+
+### Configuration Loading Order
+
+Cogent's configuration system is **layered and extensible**:
+
+1. **Class Defaults**:  
+   Each config class (e.g., `LLMConfig`) defines Python default values.  
+   _Example_:  
+   ```python
+   class LLMConfig(BaseConfig):
+       completion_model: str = "openai_gpt4-1-mini"
+   ```
+2. **Package Default TOML**:  
+   The package ships with a built-in `base.toml` (inside the Python package).  
+   This file provides default values for all config sections and will override class defaults if present.
+3. **User Runtime TOML**:  
+   If a `base.toml` is present in the current working directory at runtime, it will override both the package TOML and class defaults.  
+   _This is the recommended way for downstream users to customize configuration without modifying package code._
+
+**Precedence:**  
+_User TOML_ > _Package TOML_ > _Class Defaults_
+
+#### Example
+
+Suppose your package TOML contains:
+```toml
+[completion]
+model = "ollama_qwen_vision"
+```
+and your class default is `"openai_gpt4-1-mini"`.  
+If a user creates a `base.toml` in their project:
+```toml
+[completion]
+model = "my_custom_model"
+```
+then `config.llm.completion_model` will be `"my_custom_model"` at runtime.
+
+### Extending Configuration
+
+You can add your own config sections by subclassing `CogentBaseConfig` and registering new config classes.  
+See the extensibility section above for a code example.
+
+### Testing
+
+The test suite verifies:
+- User TOML overrides package TOML and class defaults
+- Package TOML overrides class defaults
+- Class defaults are used if no TOML value is set
 
 ### Core Configuration Classes
 
@@ -109,44 +128,12 @@ logger = setup_logger_with_handlers(
 - `RerankerConfig`: Reranking model configuration
 - `SensoryConfig`: Document processing configuration
 
-### Extending Configuration
+### Configuration Methods
 
-1. **Create a custom config class**:
-   ```python
-   @toml_config("my_section")
-   class MyCustomConfig(BaseConfig):
-       setting1: str = "default"
-       setting2: int = 100
-   ```
-
-2. **Register with global config**:
-   ```python
-   config = get_cogent_config()
-   my_config = MyCustomConfig()
-   config.register_config("my_module", my_config)
-   ```
-
-3. **Create TOML file** (optional):
-   ```toml
-   [my_section]
-   setting1 = "custom_value"
-   setting2 = 200
-   ```
-
-4. **Access in your code**:
-   ```python
-   config = get_cogent_config()
-   my_config = config.get_config("my_module")
-   # or use convenience property
-   my_config = config.my_module
-   ```
-
-### Configuration Loading Order
-
-1. Default values from config classes
-2. TOML files (merged in order)
-3. Environment variables
-4. Runtime overrides
+- `register_config(name, config)`: Register a new submodule configuration
+- `get_config(name)`: Get a submodule configuration by name
+- `get_all_configs()`: Get all registered submodule configurations
+- `llm`, `vector_store`, `reranker`, `sensory`: Convenience properties
 
 ## Provider System
 

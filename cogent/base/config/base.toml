@@ -108,3 +108,8 @@ chunk_overlap = 300          # Number of characters to overlap between chunks
 use_unstructured_api = false # Whether to use Unstructured.io API for parsing
 use_contextual_chunking = false  # Whether to use AI for intelligent chunking
 contextual_chunking_model = "ollama_qwen_vision"  # Model for contextual chunking
+
+# Video parsing and vision settings
+[sensory.parser.vision]
+model = "ollama_qwen_vision"     # Vision model to use for frame description
+frame_sample_rate = 120          # Sample every nth frame for description (-1 to disable)

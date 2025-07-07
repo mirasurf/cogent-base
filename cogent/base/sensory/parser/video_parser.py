@@ -1,14 +1,12 @@
 import base64
 import logging
-import os
-import tomllib
-from typing import Any, Dict, Optional
+from typing import Optional
 
 import assemblyai as aai
 import cv2
 import litellm
 
-from cogent.base.config import get_cogent_config
+from cogent.base.config.main import get_cogent_config
 from cogent.base.models.video import ParseVideoResult, TimeSeriesData
 
 logger = logging.getLogger(__name__)
@@ -18,17 +16,13 @@ def debug_object(title, obj):
     logger.debug("\n".join(["-" * 100, title, "-" * 100, f"{obj}", "-" * 100]))
 
 
-def load_config() -> Dict[str, Any]:
-    config_path = os.path.join(os.path.dirname(__file__), "../../../cogent.toml")
-    with open(config_path, "rb") as f:
-        return tomllib.load(f)
-
-
 class VisionModelClient:
-    def __init__(self, config: Dict[str, Any]):
-        self.config = config["parser"]["vision"]
-        self.model_key = self.config.get("model")
+    def __init__(self):
         self.settings = get_cogent_config()
+        # Get vision model from sensory config
+        vision_config = self.settings.sensory.parser.get("vision", {})
+        self.model_key = vision_config.get("model", "ollama_qwen_vision")
+        self.frame_sample_rate = vision_config.get("frame_sample_rate", 120)
 
         # Get the model configuration from registered_models
         if (
@@ -102,9 +96,12 @@ class VideoParser:
             frame_sample_rate: Sample every nth frame for description (optional, defaults to config value)
         """
         logger.info(f"Initializing VideoParser for {video_path}")
-        self.config = load_config()
         self.video_path = video_path
-        self.frame_sample_rate = frame_sample_rate or self.config["parser"]["vision"].get("frame_sample_rate", 120)
+
+        # Initialize vision model client first to get config
+        self.vision_client = VisionModelClient()
+        self.frame_sample_rate = frame_sample_rate or self.vision_client.frame_sample_rate
+
         self.cap = cv2.VideoCapture(video_path)
 
         if not self.cap.isOpened():
@@ -120,9 +117,6 @@ class VideoParser:
         aai_config = aai.TranscriptionConfig(speaker_labels=True)
         self.transcriber = aai.Transcriber(config=aai_config)
         self.transcript = TimeSeriesData(time_to_content={})
-
-        # Initialize vision model client
-        self.vision_client = VisionModelClient(self.config)
 
         logger.info(f"Video loaded: {self.duration:.2f}s duration, {self.fps:.2f} FPS")
 
