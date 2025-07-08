@@ -5,9 +5,9 @@ Copyright (c) 2025 Mirasurf
 import logging
 from typing import List, Optional, Union
 
-from cogentbase.config import get_cogent_config
-from cogentbase.models.chunk import ObjectChunk
-from cogentbase.providers.reranker.base_reranker import BaseReranker
+from cogent_base.config import get_cogent_config
+from cogent_base.models.chunk import ObjectChunk
+from cogent_base.providers.reranker.base_reranker import BaseReranker
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ class CogentReranker(BaseReranker):
 
         # Initialize the appropriate reranker implementation
         if self.provider == "flag":
-            from cogentbase.providers.reranker.flag_reranker import FlagReranker
+            from cogent_base.providers.reranker.flag_reranker import FlagReranker
 
             self.reranker_impl = FlagReranker(
                 model_name=self.reranker_config.get("model_name", "BAAI/bge-reranker-v2-gemma"),
@@ -51,7 +51,7 @@ class CogentReranker(BaseReranker):
                 device=self.reranker_config.get("device", "mps"),
             )
         elif self.provider == "litellm":
-            from cogentbase.providers.reranker.litellm_reranker import LiteLLMReranker
+            from cogent_base.providers.reranker.litellm_reranker import LiteLLMReranker
 
             self.reranker_impl = LiteLLMReranker(reranker_key)
         else:

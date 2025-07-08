@@ -12,10 +12,10 @@ try:
 except ImportError:
     ollama = None  # Make ollama import optional
 
-from cogentbase.config import get_cogent_config
-from cogentbase.models.chunk import ObjectChunk
-from cogentbase.providers.reranker.base_reranker import BaseReranker
-from cogentbase.providers.utils import initialize_ollama_model
+from cogent_base.config import get_cogent_config
+from cogent_base.models.chunk import ObjectChunk
+from cogent_base.providers.reranker.base_reranker import BaseReranker
+from cogent_base.providers.utils import initialize_ollama_model
 
 logger = logging.getLogger(__name__)
 

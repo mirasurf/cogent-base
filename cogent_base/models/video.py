@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from pydantic import BaseModel, computed_field
 
-from cogentbase.models.chunk import Chunk
+from cogent_base.models.chunk import Chunk
 
 logger = logging.getLogger(__name__)
 

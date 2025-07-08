@@ -4,7 +4,7 @@ Copyright (c) 2023-2025 morphik/morphik-core
 Original code from https://github.com/morphik/morphik-core
 """
 
-from cogentbase.providers.completion.base_completion import BaseCompletionModel
-from cogentbase.providers.completion.litellm_completion import LiteLLMCompletionModel
+from cogent_base.providers.completion.base_completion import BaseCompletionModel
+from cogent_base.providers.completion.litellm_completion import LiteLLMCompletionModel
 
 __all__ = ["BaseCompletionModel", "LiteLLMCompletionModel"]

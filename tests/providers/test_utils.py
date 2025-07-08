@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from cogentbase.providers.utils import initialize_ollama_model, is_ollama_model
+from cogent_base.providers.utils import initialize_ollama_model, is_ollama_model
 
 
 class TestIsOllamaModel:
@@ -82,7 +82,7 @@ class TestInitializeOllamaModel:
         model_config = {"model_name": "ollama/llama3.2:latest", "api_base": "http://localhost:11434"}
 
         with patch("builtins.__import__", side_effect=ImportError("No module named 'ollama'")):
-            with patch("cogentbase.providers.utils.logger") as mock_logger:
+            with patch("cogent_base.providers.utils.logger") as mock_logger:
                 result = initialize_ollama_model(model_key, model_config)
 
                 assert result == (False, None, None)
@@ -102,7 +102,7 @@ class TestInitializeOllamaModel:
             mock_ollama.__version__ = "0.1.0"
             mock_import.return_value = mock_ollama
 
-            with patch("cogentbase.providers.utils.logger") as mock_logger:
+            with patch("cogent_base.providers.utils.logger") as mock_logger:
                 result = initialize_ollama_model(model_key, model_config)
 
                 assert result == (False, None, None)
@@ -123,7 +123,7 @@ class TestInitializeOllamaModel:
             mock_ollama.__version__ = "0.1.0"
             mock_import.return_value = mock_ollama
 
-            with patch("cogentbase.providers.utils.logger") as mock_logger:
+            with patch("cogent_base.providers.utils.logger") as mock_logger:
                 result = initialize_ollama_model(model_key, model_config)
 
                 assert result == (False, None, None)
@@ -144,7 +144,7 @@ class TestInitializeOllamaModel:
             mock_ollama.__version__ = "0.1.0"
             mock_import.return_value = mock_ollama
 
-            with patch("cogentbase.providers.utils.logger") as mock_logger:
+            with patch("cogent_base.providers.utils.logger") as mock_logger:
                 result = initialize_ollama_model(model_key, model_config)
 
                 assert result == (False, None, None)
@@ -165,7 +165,7 @@ class TestInitializeOllamaModel:
             mock_ollama.__version__ = "0.1.0"
             mock_import.return_value = mock_ollama
 
-            with patch("cogentbase.providers.utils.logger") as mock_logger:
+            with patch("cogent_base.providers.utils.logger") as mock_logger:
                 result = initialize_ollama_model(model_key, model_config)
 
                 assert result == (False, None, None)
@@ -218,7 +218,7 @@ class TestInitializeOllamaModel:
         model_config = {"model_name": "ollama/llama3.2:latest", "api_base": "http://localhost:11434"}
 
         with patch("builtins.__import__", side_effect=ImportError("No module named 'ollama'")):
-            with patch("cogentbase.providers.utils.logger") as mock_logger:
+            with patch("cogent_base.providers.utils.logger") as mock_logger:
                 result = initialize_ollama_model(model_key, model_config)
 
                 assert result == (False, None, None)

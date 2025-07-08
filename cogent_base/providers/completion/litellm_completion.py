@@ -16,9 +16,9 @@ except ImportError:
 
 from pydantic import BaseModel
 
-from cogentbase.config import get_cogent_config
-from cogentbase.models.completion import CompletionRequest, CompletionResponse
-from cogentbase.providers.utils import initialize_ollama_model
+from cogent_base.config import get_cogent_config
+from cogent_base.models.completion import CompletionRequest, CompletionResponse
+from cogent_base.providers.utils import initialize_ollama_model
 
 from .base_completion import BaseCompletionModel
 

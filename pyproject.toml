@@ -40,10 +40,10 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.version]
-path = "cogentbase/__init__.py"
+path = "cogent_base/__init__.py"
 
 [tool.hatch.build.targets.wheel]
-packages = ["cogentbase"]
+packages = ["cogent_base"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

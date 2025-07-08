@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Tuple
 
 from pydantic import BaseModel
 
-from cogentbase.models.chunk import Chunk
+from cogent_base.models.chunk import Chunk
 
 
 class ParsedElement(BaseModel):
