@@ -7,7 +7,7 @@ Original code from https://github.com/morphik/morphik-core
 from abc import ABC, abstractmethod
 from typing import List, Union
 
-from cogent_base.models.chunk import Chunk
+from cogent.base.models.chunk import Chunk
 
 
 class BaseEmbeddingModel(ABC):

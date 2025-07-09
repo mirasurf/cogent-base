@@ -7,7 +7,7 @@ from typing import Any, Dict
 
 import pytest
 
-from cogent_base.config import BaseConfig, toml_config
+from cogent.base.config import BaseConfig, toml_config
 
 
 class TestBaseConfig(unittest.TestCase):

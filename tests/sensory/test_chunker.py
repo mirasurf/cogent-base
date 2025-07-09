@@ -9,9 +9,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from cogent_base.models.chunk import Chunk
-from cogent_base.sensory.chunker.contextual_chunker import ContextualChunker
-from cogent_base.sensory.chunker.standard_chunker import (
+from cogent.base.models.chunk import Chunk
+from cogent.base.sensory.chunker.contextual_chunker import ContextualChunker
+from cogent.base.sensory.chunker.standard_chunker import (
     RecursiveCharacterTextSplitter,
     StandardChunker,
 )
@@ -214,7 +214,7 @@ class TestContextualChunker(unittest.TestCase):
     """Test the ContextualChunker class."""
 
     @pytest.mark.unit
-    @patch("cogent_base.sensory.chunker.contextual_chunker.get_cogent_config")
+    @patch("cogent.base.sensory.chunker.contextual_chunker.get_cogent_config")
     def test_init_success(self, mock_get_config):
         """Test successful initialization of ContextualChunker."""
         # Mock config with registered models
@@ -234,7 +234,7 @@ class TestContextualChunker(unittest.TestCase):
         self.assertIsInstance(chunker.standard_chunker, StandardChunker)
 
     @pytest.mark.unit
-    @patch("cogent_base.sensory.chunker.contextual_chunker.get_cogent_config")
+    @patch("cogent.base.sensory.chunker.contextual_chunker.get_cogent_config")
     def test_init_model_not_found(self, mock_get_config):
         """Test initialization when model is not found in config."""
         # Mock config without the requested model
@@ -251,7 +251,7 @@ class TestContextualChunker(unittest.TestCase):
         self.assertIn("Model 'test_model' not found", str(context.exception))
 
     @pytest.mark.unit
-    @patch("cogent_base.sensory.chunker.contextual_chunker.get_cogent_config")
+    @patch("cogent.base.sensory.chunker.contextual_chunker.get_cogent_config")
     def test_init_no_registered_models(self, mock_get_config):
         """Test initialization when no models are registered."""
         # Mock config with no models
@@ -266,8 +266,8 @@ class TestContextualChunker(unittest.TestCase):
         self.assertIn("Model 'test_model' not found", str(context.exception))
 
     @pytest.mark.unit
-    @patch("cogent_base.sensory.chunker.contextual_chunker.get_cogent_config")
-    @patch("cogent_base.sensory.chunker.contextual_chunker.LiteLLMCompletionModel")
+    @patch("cogent.base.sensory.chunker.contextual_chunker.get_cogent_config")
+    @patch("cogent.base.sensory.chunker.contextual_chunker.LiteLLMCompletionModel")
     @pytest.mark.asyncio
     async def test_situate_context_success(self, mock_completion_model, mock_get_config):
         """Test successful context situating."""
@@ -296,8 +296,8 @@ class TestContextualChunker(unittest.TestCase):
         mock_model_instance.complete.assert_called_once()
 
     @pytest.mark.unit
-    @patch("cogent_base.sensory.chunker.contextual_chunker.get_cogent_config")
-    @patch("cogent_base.sensory.chunker.contextual_chunker.LiteLLMCompletionModel")
+    @patch("cogent.base.sensory.chunker.contextual_chunker.get_cogent_config")
+    @patch("cogent.base.sensory.chunker.contextual_chunker.LiteLLMCompletionModel")
     @pytest.mark.asyncio
     async def test_situate_context_completion_error(self, mock_completion_model, mock_get_config):
         """Test context situating when completion fails."""
@@ -324,8 +324,8 @@ class TestContextualChunker(unittest.TestCase):
         self.assertEqual(str(context.exception), "Completion error")
 
     @pytest.mark.unit
-    @patch("cogent_base.sensory.chunker.contextual_chunker.get_cogent_config")
-    @patch("cogent_base.sensory.chunker.contextual_chunker.LiteLLMCompletionModel")
+    @patch("cogent.base.sensory.chunker.contextual_chunker.get_cogent_config")
+    @patch("cogent.base.sensory.chunker.contextual_chunker.LiteLLMCompletionModel")
     @pytest.mark.asyncio
     async def test_split_text_success(self, mock_completion_model, mock_get_config):
         """Test successful text splitting with contextual chunking."""
@@ -357,7 +357,7 @@ class TestContextualChunker(unittest.TestCase):
             self.assertTrue(chunk.content.startswith("Context for chunk; "))
 
     @pytest.mark.unit
-    @patch("cogent_base.sensory.chunker.contextual_chunker.get_cogent_config")
+    @patch("cogent.base.sensory.chunker.contextual_chunker.get_cogent_config")
     @pytest.mark.asyncio
     async def test_split_text_empty_string(self, mock_get_config):
         """Test splitting an empty string."""
@@ -375,8 +375,8 @@ class TestContextualChunker(unittest.TestCase):
         self.assertEqual(result, [])
 
     @pytest.mark.unit
-    @patch("cogent_base.sensory.chunker.contextual_chunker.get_cogent_config")
-    @patch("cogent_base.sensory.chunker.contextual_chunker.LiteLLMCompletionModel")
+    @patch("cogent.base.sensory.chunker.contextual_chunker.get_cogent_config")
+    @patch("cogent.base.sensory.chunker.contextual_chunker.LiteLLMCompletionModel")
     @pytest.mark.asyncio
     async def test_split_text_single_chunk(self, mock_completion_model, mock_get_config):
         """Test splitting text that fits in a single chunk."""

@@ -7,12 +7,12 @@ from typing import Any, Dict, List, Optional, Tuple
 import filetype
 from unstructured.partition.auto import partition
 
-from cogent_base.config import get_cogent_config
-from cogent_base.models.chunk import Chunk
-from cogent_base.sensory.chunker.contextual_chunker import ContextualChunker
-from cogent_base.sensory.chunker.standard_chunker import StandardChunker
-from cogent_base.sensory.parser.base_parser import BaseParser, ParsedElement
-from cogent_base.sensory.parser.video_parser import VideoParser
+from cogent.base.config import get_cogent_config
+from cogent.base.models.chunk import Chunk
+from cogent.base.sensory.chunker.contextual_chunker import ContextualChunker
+from cogent.base.sensory.chunker.standard_chunker import StandardChunker
+from cogent.base.sensory.parser.base_parser import BaseParser, ParsedElement
+from cogent.base.sensory.parser.video_parser import VideoParser
 
 
 class CogentParser(BaseParser):
@@ -66,7 +66,7 @@ class CogentParser(BaseParser):
             temp_file.close()
             video_path = temp_file.name
 
-            # Load the config to get the frame_sample_rate from cogent_base.toml
+            # Load the config to get the frame_sample_rate from cogent.base.toml
             config = get_cogent_config()
             parser_config = config.get("parser", {})
             vision_config = parser_config.get("vision", {})

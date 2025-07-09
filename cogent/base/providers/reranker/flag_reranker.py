@@ -8,8 +8,8 @@ from typing import List, Optional, Union
 
 from FlagEmbedding import FlagAutoReranker
 
-from cogent_base.models.chunk import ObjectChunk
-from cogent_base.providers.reranker.base_reranker import BaseReranker
+from cogent.base.models.chunk import ObjectChunk
+from cogent.base.providers.reranker.base_reranker import BaseReranker
 
 
 class FlagReranker(BaseReranker):

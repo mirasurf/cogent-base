@@ -23,7 +23,7 @@ from weaviate.classes.init import Auth
 from weaviate.classes.query import Filter, MetadataQuery
 from weaviate.util import get_valid_uuid
 
-from cogent_base.providers.vector_store.base_vector_store import VectorStoreBase
+from cogent.base.providers.vector_store.base_vector_store import VectorStoreBase
 
 logger = logging.getLogger(__name__)
 

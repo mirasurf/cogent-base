@@ -3,8 +3,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from cogent_base.providers.vector_store.cogent_vector_store import CogentVectorStore
-from cogent_base.providers.vector_store.weaviate_vector_store import Weaviate
+from cogent.base.providers.vector_store.cogent_vector_store import CogentVectorStore
+from cogent.base.providers.vector_store.weaviate_vector_store import Weaviate
 
 
 class TestWeaviateIntegration:
@@ -44,7 +44,7 @@ class TestWeaviateIntegration:
         except Exception:
             pytest.skip("Weaviate service not accessible")
 
-        with patch("cogent_base.providers.vector_store.cogent_vector_store.get_cogent_config") as mock_get_config:
+        with patch("cogent.base.providers.vector_store.cogent_vector_store.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.vector_store.registered_vector_stores = mock_config["vector_store"][
                 "registered_vector_stores"
             ]
@@ -83,7 +83,7 @@ class TestWeaviateIntegration:
         except Exception:
             pytest.skip("Weaviate service not accessible")
 
-        with patch("cogent_base.providers.vector_store.cogent_vector_store.get_cogent_config") as mock_get_config:
+        with patch("cogent.base.providers.vector_store.cogent_vector_store.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.vector_store.registered_vector_stores = mock_config["vector_store"][
                 "registered_vector_stores"
             ]
@@ -143,7 +143,7 @@ class TestCogentVectorStoreUnit:
     @pytest.mark.unit
     def test_initialization(self, mock_config):
         """Test CogentVectorStore initialization."""
-        with patch("cogent_base.providers.vector_store.cogent_vector_store.get_cogent_config") as mock_get_config:
+        with patch("cogent.base.providers.vector_store.cogent_vector_store.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.vector_store.registered_vector_stores = mock_config["vector_store"][
                 "registered_vector_stores"
             ]
@@ -155,7 +155,7 @@ class TestCogentVectorStoreUnit:
                 "vector_store_embedding_model_dims"
             ]
 
-            with patch("cogent_base.providers.vector_store.weaviate_vector_store.Weaviate") as mock_weaviate_class:
+            with patch("cogent.base.providers.vector_store.weaviate_vector_store.Weaviate") as mock_weaviate_class:
                 mock_weaviate_instance = MagicMock()
                 mock_weaviate_class.return_value = mock_weaviate_instance
 
@@ -169,7 +169,7 @@ class TestCogentVectorStoreUnit:
     @pytest.mark.unit
     def test_invalid_store_key(self, mock_config):
         """Test initialization with invalid store key."""
-        with patch("cogent_base.providers.vector_store.cogent_vector_store.get_cogent_config") as mock_get_config:
+        with patch("cogent.base.providers.vector_store.cogent_vector_store.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.vector_store.registered_vector_stores = mock_config["vector_store"][
                 "registered_vector_stores"
             ]
@@ -180,7 +180,7 @@ class TestCogentVectorStoreUnit:
     @pytest.mark.unit
     def test_method_delegation(self, mock_config):
         """Test method delegation to underlying store."""
-        with patch("cogent_base.providers.vector_store.cogent_vector_store.get_cogent_config") as mock_get_config:
+        with patch("cogent.base.providers.vector_store.cogent_vector_store.get_cogent_config") as mock_get_config:
             mock_get_config.return_value.vector_store.registered_vector_stores = mock_config["vector_store"][
                 "registered_vector_stores"
             ]
@@ -192,7 +192,7 @@ class TestCogentVectorStoreUnit:
                 "vector_store_embedding_model_dims"
             ]
 
-            with patch("cogent_base.providers.vector_store.weaviate_vector_store.Weaviate") as mock_weaviate_class:
+            with patch("cogent.base.providers.vector_store.weaviate_vector_store.Weaviate") as mock_weaviate_class:
                 mock_weaviate_instance = MagicMock()
                 mock_weaviate_class.return_value = mock_weaviate_instance
 
@@ -244,7 +244,7 @@ class TestWeaviateUnit:
     @pytest.mark.unit
     def test_initialization(self, mock_weaviate_client):
         """Test Weaviate initialization."""
-        with patch("cogent_base.providers.vector_store.weaviate_vector_store.weaviate") as mock_weaviate:
+        with patch("cogent.base.providers.vector_store.weaviate_vector_store.weaviate") as mock_weaviate:
             mock_weaviate.connect_to_local.return_value = mock_weaviate_client
 
             weaviate_store = Weaviate(
@@ -258,7 +258,7 @@ class TestWeaviateUnit:
     @pytest.mark.unit
     def test_insert_operation(self, mock_weaviate_client):
         """Test Weaviate insert operation."""
-        with patch("cogent_base.providers.vector_store.weaviate_vector_store.weaviate") as mock_weaviate:
+        with patch("cogent.base.providers.vector_store.weaviate_vector_store.weaviate") as mock_weaviate:
             mock_weaviate.connect_to_local.return_value = mock_weaviate_client
 
             weaviate_store = Weaviate(
@@ -278,7 +278,7 @@ class TestWeaviateUnit:
     @pytest.mark.unit
     def test_search_operation(self, mock_weaviate_client):
         """Test Weaviate search operation."""
-        with patch("cogent_base.providers.vector_store.weaviate_vector_store.weaviate") as mock_weaviate:
+        with patch("cogent.base.providers.vector_store.weaviate_vector_store.weaviate") as mock_weaviate:
             mock_weaviate.connect_to_local.return_value = mock_weaviate_client
 
             weaviate_store = Weaviate(
@@ -296,7 +296,7 @@ class TestWeaviateUnit:
     @pytest.mark.unit
     def test_delete_operation(self, mock_weaviate_client):
         """Test Weaviate delete operation."""
-        with patch("cogent_base.providers.vector_store.weaviate_vector_store.weaviate") as mock_weaviate:
+        with patch("cogent.base.providers.vector_store.weaviate_vector_store.weaviate") as mock_weaviate:
             mock_weaviate.connect_to_local.return_value = mock_weaviate_client
 
             weaviate_store = Weaviate(
@@ -316,7 +316,7 @@ class TestVectorStoreErrorHandling:
     @pytest.mark.unit
     def test_weaviate_connection_error(self):
         """Test Weaviate connection error handling."""
-        with patch("cogent_base.providers.vector_store.weaviate_vector_store.weaviate") as mock_weaviate:
+        with patch("cogent.base.providers.vector_store.weaviate_vector_store.weaviate") as mock_weaviate:
             mock_weaviate.connect_to_local.side_effect = Exception("Connection failed")
 
             with pytest.raises(Exception, match="Connection failed"):
@@ -327,7 +327,7 @@ class TestVectorStoreErrorHandling:
     @pytest.mark.unit
     def test_weaviate_insert_error(self):
         """Test Weaviate insert error handling."""
-        with patch("cogent_base.providers.vector_store.weaviate_vector_store.weaviate") as mock_weaviate:
+        with patch("cogent.base.providers.vector_store.weaviate_vector_store.weaviate") as mock_weaviate:
             mock_weaviate_client = MagicMock()
             mock_weaviate_client.batch.fixed_size.side_effect = Exception("Insert failed")
             mock_weaviate_client = MagicMock()
@@ -347,7 +347,7 @@ class TestVectorStoreErrorHandling:
     @pytest.mark.unit
     def test_weaviate_search_error(self):
         """Test Weaviate search error handling."""
-        with patch("cogent_base.providers.vector_store.weaviate_vector_store.weaviate") as mock_weaviate:
+        with patch("cogent.base.providers.vector_store.weaviate_vector_store.weaviate") as mock_weaviate:
             mock_weaviate_client = MagicMock()
             mock_weaviate_client.batch.fixed_size.side_effect = Exception("Insert failed")
             mock_weaviate_client = MagicMock()

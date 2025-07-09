@@ -7,8 +7,8 @@ Original code from https://github.com/morphik/morphik-core
 import logging
 from typing import List
 
-from cogent_base.models.chunk import Chunk
-from cogent_base.sensory.chunker.base_chunker import BaseChunker
+from cogent.base.models.chunk import Chunk
+from cogent.base.sensory.chunker.base_chunker import BaseChunker
 
 logger = logging.getLogger(__name__)
 

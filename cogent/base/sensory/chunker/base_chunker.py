@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from cogent_base.models.chunk import Chunk
+from cogent.base.models.chunk import Chunk
 
 
 class BaseChunker(ABC):

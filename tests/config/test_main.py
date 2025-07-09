@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 import pytest
 
-from cogent_base.config import (
+from cogent.base.config import (
     BaseConfig,
     CogentBaseConfig,
     get_cogent_config,
@@ -19,7 +19,7 @@ class TestCogentBaseConfig(unittest.TestCase):
     """Test the CogentBaseConfig class."""
 
     @pytest.mark.unit
-    @patch("cogent_base.config.main.load_toml_config")
+    @patch("cogent.base.config.main.load_toml_config")
     def test_default_values(self, mock_load_toml):
         """Test CogentBaseConfig default values."""
         mock_load_toml.return_value = {}
@@ -31,7 +31,7 @@ class TestCogentBaseConfig(unittest.TestCase):
         self.assertIsInstance(config.sensory, BaseConfig)
 
     @pytest.mark.unit
-    @patch("cogent_base.config.main.load_toml_config")
+    @patch("cogent.base.config.main.load_toml_config")
     def test_load_toml_config_called(self, mock_load_toml):
         """Test that load_toml_config is called during initialization."""
         mock_load_toml.return_value = {}
@@ -40,7 +40,7 @@ class TestCogentBaseConfig(unittest.TestCase):
         self.assertEqual(mock_load_toml.call_count, 2)
 
     @pytest.mark.unit
-    @patch("cogent_base.config.main.load_toml_config")
+    @patch("cogent.base.config.main.load_toml_config")
     def test_load_toml_config_with_data(self, mock_load_toml):
         """Test CogentBaseConfig with TOML data."""
         mock_load_toml.return_value = {
@@ -59,7 +59,7 @@ class TestCogentBaseConfig(unittest.TestCase):
         self.assertEqual(config.sensory.chunk_size, 8000)
 
     @pytest.mark.unit
-    @patch("cogent_base.config.main.load_toml_config")
+    @patch("cogent.base.config.main.load_toml_config")
     def test_register_config(self, mock_load_toml):
         """Test registering a new configuration."""
         mock_load_toml.return_value = {}

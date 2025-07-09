@@ -6,7 +6,7 @@ import unittest
 
 import pytest
 
-from cogent_base.config import BaseConfig, ConfigRegistry, toml_config
+from cogent.base.config import BaseConfig, ConfigRegistry, toml_config
 
 
 class TestConfigRegistry(unittest.TestCase):

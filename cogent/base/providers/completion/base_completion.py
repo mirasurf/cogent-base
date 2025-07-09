@@ -6,7 +6,7 @@ Original code from https://github.com/morphik/morphik-core
 
 from abc import ABC, abstractmethod
 
-from cogent_base.models.completion import CompletionRequest, CompletionResponse
+from cogent.base.models.completion import CompletionRequest, CompletionResponse
 
 
 class BaseCompletionModel(ABC):

@@ -3,7 +3,7 @@
 # Configuration
 PYTHON := python3
 HATCH := hatch
-PYTHON_MODULES := cogent_base tests
+PYTHON_MODULES := cogent tests
 TEST_DIR := tests
 LINE_LENGTH := 120
 

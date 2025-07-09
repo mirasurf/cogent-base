@@ -6,8 +6,8 @@ import assemblyai as aai
 import cv2
 import litellm
 
-from cogent_base.config.main import get_cogent_config
-from cogent_base.models.video import ParseVideoResult, TimeSeriesData
+from cogent.base.config.main import get_cogent_config
+from cogent.base.models.video import ParseVideoResult, TimeSeriesData
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 [project]
 name = "cogent-base"
-dynamic = ['version']
+version = "0.1.10"
 description = "Base and shared modules for cogents"
 authors = [
     { name = "xmingc", email = "chenxm35@gmail.com" }
@@ -39,11 +39,8 @@ dev = [
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.version]
-path = "cogent_base/__init__.py"
-
 [tool.hatch.build.targets.wheel]
-packages = ["cogent_base"]
+packages = ["cogent"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
