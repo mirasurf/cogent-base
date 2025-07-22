@@ -4,7 +4,8 @@
 PYTHON = python3
 POETRY = poetry
 PYTEST = pytest
-PYTHON_MODULES = cogent tests
+PYTHON_MODULES = cogent_base tests
+SRC_DIR = cogent_base
 TEST_DIR = tests
 LINE_LENGTH = 120
 
@@ -68,7 +69,7 @@ test-integration: ## Run integration tests only
 
 test-coverage: ## Run tests with coverage
 	@echo "$(BLUE)🧪 Running tests with coverage...$(RESET)"
-	COGENT_CONFIG_DIR=/path/notexist $(POETRY) run $(PYTEST) $(TEST_DIR) --cov=cogent --cov-report=html --cov-report=term-missing
+	COGENT_CONFIG_DIR=/path/notexist $(POETRY) run $(PYTEST) $(TEST_DIR) --cov=$(SRC_DIR) --cov-report=html --cov-report=term-missing
 
 test-watch: ## Run tests in watch mode
 	@echo "$(BLUE)👀 Running tests in watch mode...$(RESET)"
