@@ -138,7 +138,7 @@ class TestExtensibility(unittest.TestCase):
         cogent_config = CogentBaseConfig()
         agent_config = AgentConfig()
         cogent_config.register_config("agent", agent_config)
-        cogent_config.registry.update_from_toml(mock_load_toml.return_value)
+        cogent_config._registry.update_from_toml(mock_load_toml.return_value)
         self.assertEqual(cogent_config.get_config("agent").agent_type, "research_assistant")
         self.assertEqual(cogent_config.get_config("agent").max_conversation_turns, 15)
         self.assertEqual(cogent_config.llm.completion_model, "gpt-4")

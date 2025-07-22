@@ -108,7 +108,7 @@ class CogentBaseConfig(BaseModel):
     """Main configuration class that combines all module configurations."""
 
     # Config registry for extensible submodule configs
-    registry: ConfigRegistry = Field(default_factory=ConfigRegistry)
+    _registry: ConfigRegistry = Field(default_factory=ConfigRegistry)
 
     def __init__(self, config_dir: Optional[Path] = None, **data) -> None:
         super().__init__(**data)
@@ -117,10 +117,10 @@ class CogentBaseConfig(BaseModel):
 
     def _load_default_configs(self) -> None:
         """Load default submodule configurations (class defaults)."""
-        self.registry.register("llm", LLMConfig())
-        self.registry.register("vector_store", VectorStoreConfig())
-        self.registry.register("reranker", RerankerConfig())
-        self.registry.register("sensory", SensoryConfig())
+        self._registry.register("llm", LLMConfig())
+        self._registry.register("vector_store", VectorStoreConfig())
+        self._registry.register("reranker", RerankerConfig())
+        self._registry.register("sensory", SensoryConfig())
 
     def _load_dot_cogent_toml(self, config_dir: Optional[Path] = None) -> None:
         """Load user runtime configuration that can override package defaults."""
@@ -128,40 +128,40 @@ class CogentBaseConfig(BaseModel):
         runtime_config_path = get_user_cogent_toml_path(config_dir)
         toml_data = load_toml_config(runtime_config_path)
         if toml_data:
-            self.registry.update_from_toml(toml_data)
+            self._registry.update_from_toml(toml_data)
 
     def register_config(self, name: str, config: BaseConfig) -> None:
         """Register a new submodule configuration."""
-        self.registry.register(name, config)
+        self._registry.register(name, config)
 
     def get_config(self, name: str) -> Optional[BaseConfig]:
         """Get a submodule configuration by name."""
-        return self.registry.get(name)
+        return self._registry.get(name)
 
     def get_all_configs(self) -> Dict[str, BaseConfig]:
         """Get all registered submodule configurations."""
-        return self.registry.get_all()
+        return self._registry.get_all()
 
     # Convenience properties for backward compatibility
     @property
     def llm(self) -> LLMConfig:
         """Get LLM configuration."""
-        return self.registry.get("llm")
+        return self._registry.get("llm")
 
     @property
     def vector_store(self) -> VectorStoreConfig:
         """Get vector store configuration."""
-        return self.registry.get("vector_store")
+        return self._registry.get("vector_store")
 
     @property
     def reranker(self) -> RerankerConfig:
         """Get reranker configuration."""
-        return self.registry.get("reranker")
+        return self._registry.get("reranker")
 
     @property
     def sensory(self) -> SensoryConfig:
         """Get sensory configuration."""
-        return self.registry.get("sensory")
+        return self._registry.get("sensory")
 
 
 # Create global config instance
