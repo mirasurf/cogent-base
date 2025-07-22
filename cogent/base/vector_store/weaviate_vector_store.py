@@ -9,7 +9,6 @@ import logging
 import uuid
 from typing import Any, Dict, List, Mapping, Optional
 
-from pydantic import BaseModel
 
 try:
     import weaviate
@@ -134,7 +133,12 @@ class Weaviate(BaseVectorStore):
             properties=properties,
         )
 
-    def insert(self, vectors: List[List[float]], payloads: Optional[List[Dict[str, Any]]] = None, ids: Optional[List[str]] = None) -> None:
+    def insert(
+        self,
+        vectors: List[List[float]],
+        payloads: Optional[List[Dict[str, Any]]] = None,
+        ids: Optional[List[str]] = None,
+    ) -> None:
         """
         Insert vectors into a collection.
 
@@ -226,7 +230,9 @@ class Weaviate(BaseVectorStore):
         collection = self.client.collections.get(str(self.collection_name))
         collection.data.delete_by_id(vector_id)
 
-    def update(self, vector_id: str, vector: Optional[List[float]] = None, payload: Optional[Dict[str, Any]] = None) -> None:
+    def update(
+        self, vector_id: str, vector: Optional[List[float]] = None, payload: Optional[Dict[str, Any]] = None
+    ) -> None:
         """
         Update a vector and its payload.
 

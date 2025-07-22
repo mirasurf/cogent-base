@@ -9,7 +9,6 @@ import json
 import logging
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel
 
 try:
     import psycopg2
@@ -82,7 +81,7 @@ class PGVector(BaseVectorStore):
         """
         )
 
-        if self.use_diskann and embedding_model_dims < 2000:
+        if self.use_diskann and vector_size < 2000:
             # Check if vectorscale extension is installed
             self.cur.execute("SELECT * FROM pg_extension WHERE extname = 'vectorscale'")
             if self.cur.fetchone():
@@ -105,7 +104,12 @@ class PGVector(BaseVectorStore):
 
         self.conn.commit()
 
-    def insert(self, vectors: List[List[float]], payloads: Optional[List[Dict[str, Any]]] = None, ids: Optional[List[str]] = None) -> None:
+    def insert(
+        self,
+        vectors: List[List[float]],
+        payloads: Optional[List[Dict[str, Any]]] = None,
+        ids: Optional[List[str]] = None,
+    ) -> None:
         """
         Insert vectors into a collection.
 
@@ -125,7 +129,9 @@ class PGVector(BaseVectorStore):
         )
         self.conn.commit()
 
-    def search(self, query: str, vectors: List[float], limit: int = 5, filters: Optional[Dict[str, Any]] = None) -> List[OutputData]:
+    def search(
+        self, query: str, vectors: List[float], limit: int = 5, filters: Optional[Dict[str, Any]] = None
+    ) -> List[OutputData]:
         """
         Search for similar vectors.
 
@@ -172,7 +178,9 @@ class PGVector(BaseVectorStore):
         self.cur.execute(f"DELETE FROM {self.collection_name} WHERE id = %s", (vector_id,))
         self.conn.commit()
 
-    def update(self, vector_id: str, vector: Optional[List[float]] = None, payload: Optional[Dict[str, Any]] = None) -> None:
+    def update(
+        self, vector_id: str, vector: Optional[List[float]] = None, payload: Optional[Dict[str, Any]] = None
+    ) -> None:
         """
         Update a vector and its payload.
 
@@ -272,7 +280,7 @@ class PGVector(BaseVectorStore):
         # Handle None limit by using a large default value
         if limit is None:
             limit = 10000  # Default large limit
-            
+
         query = f"""
             SELECT id, vector, payload
             FROM {self.collection_name}

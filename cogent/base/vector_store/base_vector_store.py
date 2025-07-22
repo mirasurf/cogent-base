@@ -18,20 +18,16 @@ class BaseVectorStore(ABC):
 
     @abstractmethod
     def insert(
-        self, 
-        vectors: List[List[float]], 
-        payloads: Optional[List[Dict[str, Any]]] = None, 
-        ids: Optional[List[str]] = None
+        self,
+        vectors: List[List[float]],
+        payloads: Optional[List[Dict[str, Any]]] = None,
+        ids: Optional[List[str]] = None,
     ) -> None:
         """Insert vectors into a collection."""
 
     @abstractmethod
     def search(
-        self, 
-        query: str, 
-        vectors: List[float], 
-        limit: int = 5, 
-        filters: Optional[Dict[str, Any]] = None
+        self, query: str, vectors: List[float], limit: int = 5, filters: Optional[Dict[str, Any]] = None
     ) -> List[OutputData]:
         """Search for similar vectors."""
 
@@ -41,10 +37,7 @@ class BaseVectorStore(ABC):
 
     @abstractmethod
     def update(
-        self, 
-        vector_id: str, 
-        vector: Optional[List[float]] = None, 
-        payload: Optional[Dict[str, Any]] = None
+        self, vector_id: str, vector: Optional[List[float]] = None, payload: Optional[Dict[str, Any]] = None
     ) -> None:
         """Update a vector and its payload."""
 
@@ -65,11 +58,7 @@ class BaseVectorStore(ABC):
         """Get information about a collection."""
 
     @abstractmethod
-    def list(
-        self, 
-        filters: Optional[Dict[str, Any]] = None, 
-        limit: Optional[int] = None
-    ) -> List[OutputData]:
+    def list(self, filters: Optional[Dict[str, Any]] = None, limit: Optional[int] = None) -> List[OutputData]:
         """List all memories."""
 
     @abstractmethod

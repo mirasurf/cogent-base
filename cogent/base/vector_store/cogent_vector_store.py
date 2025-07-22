@@ -69,16 +69,25 @@ class CogentVectorStore(BaseVectorStore):
     def create_col(self, vector_size: int, distance: str = "cosine") -> None:
         self.store_impl.create_col(vector_size, distance)
 
-    def insert(self, vectors: List[List[float]], payloads: Optional[List[Dict[str, Any]]] = None, ids: Optional[List[str]] = None) -> None:
+    def insert(
+        self,
+        vectors: List[List[float]],
+        payloads: Optional[List[Dict[str, Any]]] = None,
+        ids: Optional[List[str]] = None,
+    ) -> None:
         self.store_impl.insert(vectors, payloads, ids)
 
-    def search(self, query: str, vectors: List[float], limit: int = 5, filters: Optional[Dict[str, Any]] = None) -> List[OutputData]:
+    def search(
+        self, query: str, vectors: List[float], limit: int = 5, filters: Optional[Dict[str, Any]] = None
+    ) -> List[OutputData]:
         return self.store_impl.search(query, vectors, limit, filters)
 
     def delete(self, vector_id: str) -> None:
         self.store_impl.delete(vector_id)
 
-    def update(self, vector_id: str, vector: Optional[List[float]] = None, payload: Optional[Dict[str, Any]] = None) -> None:
+    def update(
+        self, vector_id: str, vector: Optional[List[float]] = None, payload: Optional[Dict[str, Any]] = None
+    ) -> None:
         self.store_impl.update(vector_id, vector, payload)
 
     def get(self, vector_id: str) -> Optional[OutputData]:

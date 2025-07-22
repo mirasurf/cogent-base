@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 class OutputData(BaseModel):
     """Standard output data structure for vector store operations."""
-    
+
     id: str
     score: Optional[float] = None
     payload: Dict[str, Any]
