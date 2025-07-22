@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cogent-base"
-version = "0.1.14"
+version = "0.1.15"
 description = "Base and shared modules for cogents"
 authors = ["xmingc <chenxm35@gmail.com>"]
 readme = "README.md"
