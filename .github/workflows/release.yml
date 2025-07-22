@@ -31,21 +31,23 @@ jobs:
       with:
         python-version: '3.11'
     
-    - name: Install Hatch and dependencies
+    - name: Install Poetry
       run: |
-        pip install hatch
-        hatch env create
-        hatch run pip install -e ".[dev]"
+        pip install poetry
+
+    - name: Install dependencies
+      run: |
+        poetry install --with dev
     
     - name: Verify version and run checks
       run: |
         # Version verification
-        HATCH_VERSION=$(hatch version)
+        POETRY_VERSION=$(poetry version -s)
         RELEASE_TAG=${GITHUB_REF#refs/tags/}
-        if [ "v$HATCH_VERSION" = "$RELEASE_TAG" ] || [ "$HATCH_VERSION" = "${RELEASE_TAG#v}" ]; then
-          echo "✅ Version match: $HATCH_VERSION = ${RELEASE_TAG#v}"
+        if [ "v$POETRY_VERSION" = "$RELEASE_TAG" ] || [ "$POETRY_VERSION" = "${RELEASE_TAG#v}" ]; then
+          echo "✅ Version match: $POETRY_VERSION = ${RELEASE_TAG#v}"
         else
-          echo "❌ Version mismatch: $HATCH_VERSION vs $RELEASE_TAG"
+          echo "❌ Version mismatch: $POETRY_VERSION vs $RELEASE_TAG"
           exit 1
         fi
         

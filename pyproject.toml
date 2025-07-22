@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cogent-base"
-version = "0.1.13"
+version = "0.1.14"
 description = "Base and shared modules for cogents"
 authors = ["xmingc <chenxm35@gmail.com>"]
 readme = "README.md"
@@ -20,14 +20,12 @@ opencv-python = ">=4.9.0"
 assemblyai = ">=0.21.0"
 weaviate-client = ">=4.15.0"
 instructor = ">=1.9.0"
-
-[tool.poetry.group.pandasai.dependencies]
+# pandasai
 pandasai = ">=3.0.0b19"
 pandasai-openai = ">=0.1.4"
 openai = ">=1.50.0"
 plotly = ">=6.2.0"
-
-[tool.poetry.group.smartvoice.dependencies]
+# smartvoice
 aliyun-python-sdk-core = ">=2.13.1,<3.0.0"
 
 [tool.poetry.group.dev.dependencies]
