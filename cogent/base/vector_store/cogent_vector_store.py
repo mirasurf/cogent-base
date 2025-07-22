@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional
 from cogent.base.config import get_cogent_config
 from cogent.base.config.consts import COGENT_VECTOR_STORE_PROVIDER_PGVECTOR, COGENT_VECTOR_STORE_PROVIDER_WEAVIATE
 from cogent.base.vector_store.base_vector_store import BaseVectorStore
+from cogent.base.vector_store.models import OutputData
 
 logger = logging.getLogger(__name__)
 
@@ -65,13 +66,13 @@ class CogentVectorStore(BaseVectorStore):
 
         logger.info(f"Initialized Cogent vector store with store_key={store_key}, config={self.store_config}")
 
-    def create_col(self, embedding_model_dims: int) -> None:
-        self.store_impl.create_col(embedding_model_dims)
+    def create_col(self, vector_size: int, distance: str = "cosine") -> None:
+        self.store_impl.create_col(vector_size, distance)
 
     def insert(self, vectors: List[List[float]], payloads: Optional[List[Dict[str, Any]]] = None, ids: Optional[List[str]] = None) -> None:
         self.store_impl.insert(vectors, payloads, ids)
 
-    def search(self, query: str, vectors: List[List[float]], limit: int = 5, filters: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    def search(self, query: str, vectors: List[float], limit: int = 5, filters: Optional[Dict[str, Any]] = None) -> List[OutputData]:
         return self.store_impl.search(query, vectors, limit, filters)
 
     def delete(self, vector_id: str) -> None:
@@ -80,7 +81,7 @@ class CogentVectorStore(BaseVectorStore):
     def update(self, vector_id: str, vector: Optional[List[float]] = None, payload: Optional[Dict[str, Any]] = None) -> None:
         self.store_impl.update(vector_id, vector, payload)
 
-    def get(self, vector_id: str) -> Optional[Dict[str, Any]]:
+    def get(self, vector_id: str) -> Optional[OutputData]:
         return self.store_impl.get(vector_id)
 
     def list_cols(self) -> List[str]:
@@ -92,7 +93,7 @@ class CogentVectorStore(BaseVectorStore):
     def col_info(self) -> Dict[str, Any]:
         return self.store_impl.col_info()
 
-    def list(self, filters: Optional[Dict[str, Any]] = None, limit: Optional[int] = None) -> List[Dict[str, Any]]:
+    def list(self, filters: Optional[Dict[str, Any]] = None, limit: Optional[int] = None) -> List[OutputData]:
         return self.store_impl.list(filters, limit)
 
     def reset(self) -> None:

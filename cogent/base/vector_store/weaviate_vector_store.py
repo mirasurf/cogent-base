@@ -24,14 +24,9 @@ from weaviate.classes.query import Filter, MetadataQuery
 from weaviate.util import get_valid_uuid
 
 from cogent.base.vector_store.base_vector_store import BaseVectorStore
+from cogent.base.vector_store.models import OutputData
 
 logger = logging.getLogger(__name__)
-
-
-class OutputData(BaseModel):
-    id: str
-    score: float
-    payload: Dict
 
 
 class Weaviate(BaseVectorStore):
@@ -172,7 +167,7 @@ class Weaviate(BaseVectorStore):
         query: str,
         vectors: List[float],
         limit: int = 5,
-        filters: Optional[Dict] = None,
+        filters: Optional[Dict[str, Any]] = None,
     ) -> List[OutputData]:
         """
         Search for similar vectors.
@@ -254,7 +249,7 @@ class Weaviate(BaseVectorStore):
                 existing_payload: Mapping[str, str] = existing_data
                 collection.data.update(uuid=vector_id, properties=existing_payload, vector=vector)
 
-    def get(self, vector_id: str) -> Optional[Dict[str, Any]]:
+    def get(self, vector_id: str) -> Optional[OutputData]:
         """
         Retrieve a vector by ID.
 
@@ -320,7 +315,7 @@ class Weaviate(BaseVectorStore):
             return schema
         return None
 
-    def list(self, filters: Optional[Dict[str, Any]] = None, limit: Optional[int] = 100) -> List[OutputData]:
+    def list(self, filters: Optional[Dict[str, Any]] = None, limit: Optional[int] = None) -> List[OutputData]:
         """
         List all vectors in a collection.
         """

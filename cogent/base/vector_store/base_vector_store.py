@@ -6,12 +6,14 @@ Licensed under the Apache License, Version 2.0
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
+
+from .models import OutputData
 
 
 class BaseVectorStore(ABC):
     @abstractmethod
-    def create_col(self, name: str, vector_size: int, distance: str) -> None:
+    def create_col(self, vector_size: int, distance: str = "cosine") -> None:
         """Create a new collection."""
 
     @abstractmethod
@@ -27,10 +29,10 @@ class BaseVectorStore(ABC):
     def search(
         self, 
         query: str, 
-        vectors: List[List[float]], 
+        vectors: List[float], 
         limit: int = 5, 
         filters: Optional[Dict[str, Any]] = None
-    ) -> List[Dict[str, Any]]:
+    ) -> List[OutputData]:
         """Search for similar vectors."""
 
     @abstractmethod
@@ -47,7 +49,7 @@ class BaseVectorStore(ABC):
         """Update a vector and its payload."""
 
     @abstractmethod
-    def get(self, vector_id: str) -> Optional[Dict[str, Any]]:
+    def get(self, vector_id: str) -> Optional[OutputData]:
         """Retrieve a vector by ID."""
 
     @abstractmethod
@@ -67,7 +69,7 @@ class BaseVectorStore(ABC):
         self, 
         filters: Optional[Dict[str, Any]] = None, 
         limit: Optional[int] = None
-    ) -> List[Dict[str, Any]]:
+    ) -> List[OutputData]:
         """List all memories."""
 
     @abstractmethod

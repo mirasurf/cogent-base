@@ -18,14 +18,9 @@ except ImportError:
     raise ImportError("The 'psycopg2' library is required. Please install it using 'pip install psycopg2'.")
 
 from cogent.base.vector_store.base_vector_store import BaseVectorStore
+from cogent.base.vector_store.models import OutputData
 
 logger = logging.getLogger(__name__)
-
-
-class OutputData(BaseModel):
-    id: Optional[str]
-    score: Optional[float]
-    payload: Optional[dict]
 
 
 class PGVector(BaseVectorStore):
@@ -67,20 +62,21 @@ class PGVector(BaseVectorStore):
         if collection_name not in collections:
             self.create_col(embedding_model_dims)
 
-    def create_col(self, embedding_model_dims: int) -> None:
+    def create_col(self, vector_size: int, distance: str = "cosine") -> None:
         """
         Create a new collection (table in PostgreSQL).
         Will also initialize vector search index if specified.
 
         Args:
-            embedding_model_dims (int): Dimension of the embedding vector.
+            vector_size (int): Dimension of the embedding vector.
+            distance (str): Distance metric (not used in PGVector, for compatibility).
         """
         self.cur.execute("CREATE EXTENSION IF NOT EXISTS vector")
         self.cur.execute(
             f"""
             CREATE TABLE IF NOT EXISTS {self.collection_name} (
                 id UUID PRIMARY KEY,
-                vector vector({embedding_model_dims}),
+                vector vector({vector_size}),
                 payload JSONB
             );
         """
@@ -129,7 +125,7 @@ class PGVector(BaseVectorStore):
         )
         self.conn.commit()
 
-    def search(self, query: str, vectors: List[List[float]], limit: int = 5, filters: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    def search(self, query: str, vectors: List[float], limit: int = 5, filters: Optional[Dict[str, Any]] = None) -> List[OutputData]:
         """
         Search for similar vectors.
 
@@ -197,7 +193,7 @@ class PGVector(BaseVectorStore):
             )
         self.conn.commit()
 
-    def get(self, vector_id) -> OutputData:
+    def get(self, vector_id: str) -> Optional[OutputData]:
         """
         Retrieve a vector by ID.
 
@@ -252,13 +248,13 @@ class PGVector(BaseVectorStore):
         result = self.cur.fetchone()
         return {"name": result[0], "count": result[1], "size": result[2]}
 
-    def list(self, filters: Optional[Dict[str, Any]] = None, limit: Optional[int] = 100) -> List[Dict[str, Any]]:
+    def list(self, filters: Optional[Dict[str, Any]] = None, limit: Optional[int] = None) -> List[OutputData]:
         """
         List all vectors in a collection.
 
         Args:
             filters (Dict, optional): Filters to apply to the list.
-            limit (int, optional): Number of vectors to return. Defaults to 100.
+            limit (int, optional): Number of vectors to return. Defaults to 10000 if None.
 
         Returns:
             List[OutputData]: List of vectors.
@@ -273,6 +269,10 @@ class PGVector(BaseVectorStore):
 
         filter_clause = "WHERE " + " AND ".join(filter_conditions) if filter_conditions else ""
 
+        # Handle None limit by using a large default value
+        if limit is None:
+            limit = 10000  # Default large limit
+            
         query = f"""
             SELECT id, vector, payload
             FROM {self.collection_name}
@@ -283,7 +283,7 @@ class PGVector(BaseVectorStore):
         self.cur.execute(query, (*filter_params, limit))
 
         results = self.cur.fetchall()
-        return [[OutputData(id=str(r[0]), score=None, payload=r[2]) for r in results]]
+        return [OutputData(id=str(r[0]), score=None, payload=r[2]) for r in results]
 
     def __del__(self) -> None:
         """
