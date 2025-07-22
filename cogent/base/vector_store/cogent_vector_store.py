@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 from cogent.base.config import get_cogent_config
 from cogent.base.config.consts import COGENT_VECTOR_STORE_PROVIDER_PGVECTOR, COGENT_VECTOR_STORE_PROVIDER_WEAVIATE
@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class CogentVectorStore(BaseVectorStore):
-    def __init__(self, store_key: str):
+    def __init__(self, store_key: str) -> None:
         """
         Initialize Cogent vector store with a model key from registered_vector_stores.
 
@@ -65,35 +65,35 @@ class CogentVectorStore(BaseVectorStore):
 
         logger.info(f"Initialized Cogent vector store with store_key={store_key}, config={self.store_config}")
 
-    def create_col(self, embedding_model_dims):
+    def create_col(self, embedding_model_dims: int) -> None:
         self.store_impl.create_col(embedding_model_dims)
 
-    def insert(self, vectors, payloads=None, ids=None):
+    def insert(self, vectors: List[List[float]], payloads: Optional[List[Dict[str, Any]]] = None, ids: Optional[List[str]] = None) -> None:
         self.store_impl.insert(vectors, payloads, ids)
 
-    def search(self, query, vectors, limit=5, filters=None):
+    def search(self, query: str, vectors: List[List[float]], limit: int = 5, filters: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
         return self.store_impl.search(query, vectors, limit, filters)
 
-    def delete(self, vector_id):
+    def delete(self, vector_id: str) -> None:
         self.store_impl.delete(vector_id)
 
-    def update(self, vector_id, vector=None, payload=None):
+    def update(self, vector_id: str, vector: Optional[List[float]] = None, payload: Optional[Dict[str, Any]] = None) -> None:
         self.store_impl.update(vector_id, vector, payload)
 
-    def get(self, vector_id):
+    def get(self, vector_id: str) -> Optional[Dict[str, Any]]:
         return self.store_impl.get(vector_id)
 
-    def list_cols(self):
+    def list_cols(self) -> List[str]:
         return self.store_impl.list_cols()
 
-    def delete_col(self):
+    def delete_col(self) -> None:
         self.store_impl.delete_col()
 
-    def col_info(self):
+    def col_info(self) -> Dict[str, Any]:
         return self.store_impl.col_info()
 
-    def list(self, filters=None, limit=None):
+    def list(self, filters: Optional[Dict[str, Any]] = None, limit: Optional[int] = None) -> List[Dict[str, Any]]:
         return self.store_impl.list(filters, limit)
 
-    def reset(self):
+    def reset(self) -> None:
         self.store_impl.reset()

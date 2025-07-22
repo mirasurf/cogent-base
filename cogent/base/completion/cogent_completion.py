@@ -19,7 +19,7 @@ class CogentCompletionModel(BaseCompletionModel):
     Uses registered models from the config file and routes to appropriate implementations.
     """
 
-    def __init__(self, model_key: str):
+    def __init__(self, model_key: str) -> None:
         """
         Initialize Cogent completion model with a model key from registered_models.
 

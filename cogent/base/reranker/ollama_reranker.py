@@ -24,7 +24,7 @@ class OllamaReranker(BaseReranker):
     Uses registered models from the config file with direct Ollama client.
     """
 
-    def __init__(self, model_key: str):
+    def __init__(self, model_key: str) -> None:
         """
         Initialize Ollama reranker with a model key from registered_rerankers.
 

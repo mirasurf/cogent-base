@@ -1,6 +1,6 @@
 import base64
 import logging
-from typing import Optional
+from typing import Any, Optional
 
 import assemblyai as aai
 import cv2
@@ -12,12 +12,12 @@ from cogent.base.models.video import ParseVideoResult, TimeSeriesData
 logger = logging.getLogger(__name__)
 
 
-def debug_object(title, obj):
+def debug_object(title: str, obj: Any) -> None:
     logger.debug("\n".join(["-" * 100, title, "-" * 100, f"{obj}", "-" * 100]))
 
 
 class VisionModelClient:
-    def __init__(self):
+    def __init__(self) -> None:
         self.settings = get_cogent_config()
         # Get vision model from sensory config
         vision_config = self.settings.sensory.parser.get("vision", {})
@@ -86,7 +86,7 @@ class VisionModelClient:
 
 
 class VideoParser:
-    def __init__(self, video_path: str, assemblyai_api_key: str, frame_sample_rate: Optional[int] = None):
+    def __init__(self, video_path: str, assemblyai_api_key: str, frame_sample_rate: Optional[int] = None) -> None:
         """
         Initialize the video parser
 
@@ -236,7 +236,7 @@ class VideoParser:
         logger.info("Video processing completed successfully")
         return result
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Clean up video capture object"""
         if hasattr(self, "cap"):
             logger.debug("Releasing video capture resources")

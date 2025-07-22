@@ -7,7 +7,7 @@ Licensed under the Apache License, Version 2.0
 
 import json
 import logging
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel
 
@@ -67,7 +67,7 @@ class PGVector(BaseVectorStore):
         if collection_name not in collections:
             self.create_col(embedding_model_dims)
 
-    def create_col(self, embedding_model_dims):
+    def create_col(self, embedding_model_dims: int) -> None:
         """
         Create a new collection (table in PostgreSQL).
         Will also initialize vector search index if specified.
@@ -109,7 +109,7 @@ class PGVector(BaseVectorStore):
 
         self.conn.commit()
 
-    def insert(self, vectors, payloads=None, ids=None):
+    def insert(self, vectors: List[List[float]], payloads: Optional[List[Dict[str, Any]]] = None, ids: Optional[List[str]] = None) -> None:
         """
         Insert vectors into a collection.
 
@@ -129,7 +129,7 @@ class PGVector(BaseVectorStore):
         )
         self.conn.commit()
 
-    def search(self, query, vectors, limit=5, filters=None):
+    def search(self, query: str, vectors: List[List[float]], limit: int = 5, filters: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
         """
         Search for similar vectors.
 
@@ -166,7 +166,7 @@ class PGVector(BaseVectorStore):
         results = self.cur.fetchall()
         return [OutputData(id=str(r[0]), score=float(r[1]), payload=r[2]) for r in results]
 
-    def delete(self, vector_id):
+    def delete(self, vector_id: str) -> None:
         """
         Delete a vector by ID.
 
@@ -176,7 +176,7 @@ class PGVector(BaseVectorStore):
         self.cur.execute(f"DELETE FROM {self.collection_name} WHERE id = %s", (vector_id,))
         self.conn.commit()
 
-    def update(self, vector_id, vector=None, payload=None):
+    def update(self, vector_id: str, vector: Optional[List[float]] = None, payload: Optional[Dict[str, Any]] = None) -> None:
         """
         Update a vector and its payload.
 
@@ -226,12 +226,12 @@ class PGVector(BaseVectorStore):
         self.cur.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
         return [row[0] for row in self.cur.fetchall()]
 
-    def delete_col(self):
+    def delete_col(self) -> None:
         """Delete a collection."""
         self.cur.execute(f"DROP TABLE IF EXISTS {self.collection_name}")
         self.conn.commit()
 
-    def col_info(self):
+    def col_info(self) -> Dict[str, Any]:
         """
         Get information about a collection.
 
@@ -252,7 +252,7 @@ class PGVector(BaseVectorStore):
         result = self.cur.fetchone()
         return {"name": result[0], "count": result[1], "size": result[2]}
 
-    def list(self, filters=None, limit=100):
+    def list(self, filters: Optional[Dict[str, Any]] = None, limit: Optional[int] = 100) -> List[Dict[str, Any]]:
         """
         List all vectors in a collection.
 
@@ -285,7 +285,7 @@ class PGVector(BaseVectorStore):
         results = self.cur.fetchall()
         return [[OutputData(id=str(r[0]), score=None, payload=r[2]) for r in results]]
 
-    def __del__(self):
+    def __del__(self) -> None:
         """
         Close the database connection when the object is deleted.
         """
@@ -294,7 +294,7 @@ class PGVector(BaseVectorStore):
         if hasattr(self, "conn"):
             self.conn.close()
 
-    def reset(self):
+    def reset(self) -> None:
         """Reset the index by deleting and recreating it."""
         logger.warning(f"Resetting index {self.collection_name}...")
         self.delete_col()

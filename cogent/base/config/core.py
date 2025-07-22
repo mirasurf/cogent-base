@@ -36,7 +36,7 @@ class LLMConfig(BaseConfig):
     def _from_toml(cls, toml_data: Dict[str, Any], section_name: Optional[str] = None) -> "LLMConfig":
         """Custom TOML loading implementation for LLMConfig."""
 
-        def get(key: str, section: Dict[str, Any], cast=None, default=None):
+        def get(key: str, section: Dict[str, Any], cast=None, default=None) -> Any:
             val = section.get(key, default)
             if cast:
                 try:
@@ -110,19 +110,19 @@ class CogentBaseConfig(BaseModel):
     # Config registry for extensible submodule configs
     registry: ConfigRegistry = Field(default_factory=ConfigRegistry)
 
-    def __init__(self, config_dir: Optional[Path] = None, **data):
+    def __init__(self, config_dir: Optional[Path] = None, **data) -> None:
         super().__init__(**data)
         self._load_default_configs()
         self._load_dot_cogent_toml(config_dir=config_dir)
 
-    def _load_default_configs(self):
+    def _load_default_configs(self) -> None:
         """Load default submodule configurations (class defaults)."""
         self.registry.register("llm", LLMConfig())
         self.registry.register("vector_store", VectorStoreConfig())
         self.registry.register("reranker", RerankerConfig())
         self.registry.register("sensory", SensoryConfig())
 
-    def _load_dot_cogent_toml(self, config_dir: Optional[Path] = None):
+    def _load_dot_cogent_toml(self, config_dir: Optional[Path] = None) -> None:
         """Load user runtime configuration that can override package defaults."""
         # Check for user runtime config in current working directory or provided config_dir
         runtime_config_path = get_user_cogent_toml_path(config_dir)

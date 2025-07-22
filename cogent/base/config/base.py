@@ -11,7 +11,7 @@ from pydantic import BaseModel, ConfigDict
 T = TypeVar("T", bound="BaseConfig")
 
 
-def toml_config(section_name: str, default_factory: Optional[Callable[[], T]] = None):
+def toml_config(section_name: str, default_factory: Optional[Callable[[], T]] = None) -> Callable[[Type[T]], Type[T]]:
     """
     Decorator to add TOML loading capability to config classes.
     Supports nested section names like 'nova.agent.tools'.

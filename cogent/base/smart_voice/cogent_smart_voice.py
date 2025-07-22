@@ -21,7 +21,7 @@ class CogentSmartVoice(SmartVoiceBase):
     Handles both transcription API calls and text extraction.
     """
 
-    def __init__(self, ak_id: str, ak_secret: str, app_key: str, region_id: str = "cn-shanghai"):
+    def __init__(self, ak_id: str, ak_secret: str, app_key: str, region_id: str = "cn-shanghai") -> None:
         """
         Initialize CogentSmartVoice with Aliyun credentials.
 

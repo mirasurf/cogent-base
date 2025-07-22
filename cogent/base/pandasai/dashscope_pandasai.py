@@ -42,7 +42,7 @@ class PandasAIOnDashScope(OpenAI):
     Extends pandasai_openai.OpenAI to work with DashScope's OpenAI-compatible API.
     """
 
-    def __init__(self, api_token: str, model: str = _DEFAULT_DASHSCOPE_MODEL, **kwargs):
+    def __init__(self, api_token: str, model: str = _DEFAULT_DASHSCOPE_MODEL, **kwargs) -> None:
         """
         Initialize the PandasAIOnDashScope class with DashScope's API base and Qwen model.
 

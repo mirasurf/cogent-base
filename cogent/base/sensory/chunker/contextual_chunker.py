@@ -37,7 +37,7 @@ class ContextualChunker(BaseChunker):
     Answer only with the succinct context and nothing else.
     """
 
-    def __init__(self, chunk_size: int, chunk_overlap: int):
+    def __init__(self, chunk_size: int, chunk_overlap: int) -> None:
         self.standard_chunker = StandardChunker(chunk_size, chunk_overlap)
 
         # Get the config for contextual chunking

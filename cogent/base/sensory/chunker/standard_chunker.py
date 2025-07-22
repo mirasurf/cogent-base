@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 # Langchain's RecursiveCharacterTextSplitter is not async, so we need to wrap it
 class RecursiveCharacterTextSplitter:
-    def __init__(self, chunk_size: int, chunk_overlap: int, length_function=len, separators=None):
+    def __init__(self, chunk_size: int, chunk_overlap: int, length_function=len, separators=None) -> None:
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         self.length_function = length_function
@@ -73,7 +73,7 @@ class RecursiveCharacterTextSplitter:
 class StandardChunker(BaseChunker):
     """Standard chunking using langchain's RecursiveCharacterTextSplitter"""
 
-    def __init__(self, chunk_size: int, chunk_overlap: int):
+    def __init__(self, chunk_size: int, chunk_overlap: int) -> None:
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size,
             chunk_overlap=chunk_overlap,

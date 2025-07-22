@@ -143,7 +143,7 @@ class OllamaCompletionModel(BaseCompletionModel):
     Uses registered models from the config file with direct Ollama client.
     """
 
-    def __init__(self, model_key: str):
+    def __init__(self, model_key: str) -> None:
         """
         Initialize Ollama completion model with a model key from registered_models.
 

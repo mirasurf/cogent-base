@@ -23,7 +23,7 @@ class CogentReranker(BaseReranker):
     Uses registered rerankers from the config file and routes to appropriate implementations.
     """
 
-    def __init__(self, reranker_key: str):
+    def __init__(self, reranker_key: str) -> None:
         """
         Initialize Cogent reranker with a reranker key from registered_rerankers.
 

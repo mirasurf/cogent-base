@@ -7,7 +7,7 @@ Licensed under the Apache License, Version 2.0
 
 import logging
 import uuid
-from typing import Dict, List, Mapping, Optional
+from typing import Any, Dict, List, Mapping, Optional
 
 from pydantic import BaseModel
 
@@ -100,7 +100,7 @@ class Weaviate(BaseVectorStore):
 
         return result
 
-    def create_col(self, vector_size, distance="cosine"):
+    def create_col(self, vector_size: int, distance: str = "cosine") -> None:
         """
         Create a new collection with the specified schema.
 
@@ -139,7 +139,7 @@ class Weaviate(BaseVectorStore):
             properties=properties,
         )
 
-    def insert(self, vectors, payloads=None, ids=None):
+    def insert(self, vectors: List[List[float]], payloads: Optional[List[Dict[str, Any]]] = None, ids: Optional[List[str]] = None) -> None:
         """
         Insert vectors into a collection.
 
@@ -221,7 +221,7 @@ class Weaviate(BaseVectorStore):
             )
         return results
 
-    def delete(self, vector_id):
+    def delete(self, vector_id: str) -> None:
         """
         Delete a vector by ID.
 
@@ -231,7 +231,7 @@ class Weaviate(BaseVectorStore):
         collection = self.client.collections.get(str(self.collection_name))
         collection.data.delete_by_id(vector_id)
 
-    def update(self, vector_id, vector=None, payload=None):
+    def update(self, vector_id: str, vector: Optional[List[float]] = None, payload: Optional[Dict[str, Any]] = None) -> None:
         """
         Update a vector and its payload.
 
@@ -254,7 +254,7 @@ class Weaviate(BaseVectorStore):
                 existing_payload: Mapping[str, str] = existing_data
                 collection.data.update(uuid=vector_id, properties=existing_payload, vector=vector)
 
-    def get(self, vector_id):
+    def get(self, vector_id: str) -> Optional[Dict[str, Any]]:
         """
         Retrieve a vector by ID.
 
@@ -292,7 +292,7 @@ class Weaviate(BaseVectorStore):
         )
         return results
 
-    def list_cols(self):
+    def list_cols(self) -> List[str]:
         """
         List all collections.
 
@@ -304,11 +304,11 @@ class Weaviate(BaseVectorStore):
         print(f"collections: {collections}")
         return {"collections": [{"name": col.name} for col in collections]}
 
-    def delete_col(self):
+    def delete_col(self) -> None:
         """Delete a collection."""
         self.client.collections.delete(self.collection_name)
 
-    def col_info(self):
+    def col_info(self) -> Dict[str, Any]:
         """
         Get information about a collection.
 
@@ -320,7 +320,7 @@ class Weaviate(BaseVectorStore):
             return schema
         return None
 
-    def list(self, filters=None, limit=100) -> List[OutputData]:
+    def list(self, filters: Optional[Dict[str, Any]] = None, limit: Optional[int] = 100) -> List[OutputData]:
         """
         List all vectors in a collection.
         """
@@ -352,7 +352,7 @@ class Weaviate(BaseVectorStore):
             results.append(OutputData(id=str(obj.uuid).split("'")[0], score=1.0, payload=payload))
         return [results]
 
-    def reset(self):
+    def reset(self) -> None:
         """Reset the index by deleting and recreating it."""
         logger.warning(f"Resetting index {self.collection_name}...")
         self.delete_col()

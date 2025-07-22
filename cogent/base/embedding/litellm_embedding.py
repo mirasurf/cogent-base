@@ -23,7 +23,7 @@ class LiteLLMEmbeddingModel(BaseEmbeddingModel):
     various embedding providers. Uses registered models from the config file.
     """
 
-    def __init__(self, model_key: str):
+    def __init__(self, model_key: str) -> None:
         """
         Initialize LiteLLM embedding model with a model key from registered_models.
 

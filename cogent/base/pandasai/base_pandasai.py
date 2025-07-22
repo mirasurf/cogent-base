@@ -20,7 +20,7 @@ class BasePandasAI(ABC):
     Provides a unified interface for different LLM providers in PandasAI.
     """
 
-    def __init__(self, model_key: str):
+    def __init__(self, model_key: str) -> None:
         """
         Initialize the base PandasAI model.
 

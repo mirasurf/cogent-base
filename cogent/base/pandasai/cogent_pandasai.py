@@ -23,7 +23,7 @@ class CogentPandasAI:
     Uses registered models from the config file and routes to appropriate implementations.
     """
 
-    def __init__(self, model_key: str, provider: str = "dashscope"):
+    def __init__(self, model_key: str, provider: str = "dashscope") -> None:
         """
         Initialize Cogent PandasAI with a model key from registered_models.
 
