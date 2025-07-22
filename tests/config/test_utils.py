@@ -8,10 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from cogent_base.config import (
-    load_merged_toml_configs,
-    load_toml_config,
-)
+from cogent_base.config.utils import load_merged_toml_configs, load_toml_config
 
 
 class TestLoadTomlConfig(unittest.TestCase):
