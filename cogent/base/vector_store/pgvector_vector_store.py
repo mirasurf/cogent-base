@@ -9,7 +9,6 @@ import json
 import logging
 from typing import Any, Dict, List, Optional
 
-
 try:
     import psycopg2
     from psycopg2.extras import execute_values
