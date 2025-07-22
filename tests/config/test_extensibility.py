@@ -31,9 +31,6 @@ class AgentConfig(BaseConfig):
     memory_size: int = 1000
     temperature: float = 0.7
 
-    def get_toml_section(self) -> str:
-        return "agent"
-
     @classmethod
     def _from_toml(cls, toml_data: dict, section_name: Optional[str] = None) -> "AgentConfig":
         agent_section = toml_data.get("agent", {})
@@ -52,9 +49,6 @@ class WorkflowConfig(BaseConfig):
     steps: list = []
     max_retries: int = 3
     timeout: int = 300
-
-    def get_toml_section(self) -> str:
-        return "workflow"
 
     @classmethod
     def _from_toml(cls, toml_data: dict, section_name: Optional[str] = None) -> "WorkflowConfig":
