@@ -1,10 +1,10 @@
 [tool.poetry]
 name = "cogent-base"
-version = "0.1.15"
+version = "0.1.16"
 description = "Base and shared modules for cogents"
 authors = ["xmingc <chenxm35@gmail.com>"]
 readme = "README.md"
-packages = [{include = "cogent"}]
+packages = [{include = "cogent_base"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12" # 3.11 is the maximum version for pandasai
