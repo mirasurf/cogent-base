@@ -3,12 +3,14 @@ Core configuration classes.
 Contains the main configuration classes for LLM, VectorStore, Reranker, and Sensory.
 """
 
-from typing import Any, Dict
+from pathlib import Path
+from typing import Any, Dict, Optional
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from .base import BaseConfig, toml_config
-from .utils import _safe_bool, _safe_int
+from .registry import ConfigRegistry
+from .utils import get_user_cogent_toml_path, load_toml_config
 
 
 @toml_config("llm")
@@ -18,23 +20,20 @@ class LLMConfig(BaseConfig):
     registered_models: Dict[str, Dict[str, Any]] = Field(default_factory=dict)
 
     # Completion configuration
-    completion_provider: str = "litellm"
-    completion_model: str = "openai_gpt4-1-mini"
-    completion_max_tokens: int = 2000
-    completion_temperature: float = 0.7
+    completion_provider: str = "ollama"
+    completion_model: str = "ollama_qwen_vision"
+    completion_max_tokens: int = 5000
+    completion_temperature: float = 0.3
 
     # Embedding configuration
-    embedding_provider: str = "litellm"
-    embedding_model: str = "openai_embedding"
+    embedding_provider: str = "ollama"
+    embedding_model: str = "ollama_embedding"
     embedding_dimensions: int = 768
     embedding_similarity_metric: str = "cosine"
     embedding_batch_size: int = 100
 
-    def get_toml_section(self) -> str:
-        return "llm"
-
     @classmethod
-    def _from_toml(cls, toml_data: Dict[str, Any]) -> "LLMConfig":
+    def _from_toml(cls, toml_data: Dict[str, Any], section_name: Optional[str] = None) -> "LLMConfig":
         """Custom TOML loading implementation for LLMConfig."""
 
         def get(key: str, section: Dict[str, Any], cast=None, default=None):
@@ -66,6 +65,16 @@ class LLMConfig(BaseConfig):
         )
 
 
+@toml_config("reranker")
+class RerankerConfig(BaseConfig):
+    """Configuration for rerankers from REGISTERED_RERANKERS."""
+
+    registered_rerankers: Dict[str, Dict[str, Any]] = Field(default_factory=dict)
+    enable_reranker: bool = False
+    provider: str = "ollama"
+    model: str = "ollama_reranker"
+
+
 @toml_config("vector_store")
 class VectorStoreConfig(BaseConfig):
     """Configuration for vector stores from REGISTERED_VECTOR_STORES."""
@@ -74,45 +83,6 @@ class VectorStoreConfig(BaseConfig):
     provider: str = "pgvector"
     collection_name: str = "cogent"
     embedding_model_dims: int = 768
-
-    def get_toml_section(self) -> str:
-        return "vector_store"
-
-    @classmethod
-    def _from_toml(cls, toml_data: Dict[str, Any]) -> "VectorStoreConfig":
-        """Custom TOML loading implementation for VectorStoreConfig."""
-        vector_store_cfg = toml_data.get("vector_store", {})
-
-        return cls(
-            registered_vector_stores=toml_data.get("registered_vector_stores", {}),
-            provider=vector_store_cfg.get("provider", cls().provider),
-            collection_name=vector_store_cfg.get("collection_name", cls().collection_name),
-            embedding_model_dims=_safe_int(vector_store_cfg.get("embedding_model_dims"), cls().embedding_model_dims),
-        )
-
-
-@toml_config("reranker")
-class RerankerConfig(BaseConfig):
-    """Configuration for rerankers from REGISTERED_RERANKERS."""
-
-    registered_rerankers: Dict[str, Dict[str, Any]] = Field(default_factory=dict)
-    enable_reranker: bool = False
-    reranker_provider: str = "litellm"
-    reranker_model: str = "ollama_reranker"
-
-    def get_toml_section(self) -> str:
-        return "reranker"
-
-    @classmethod
-    def _from_toml(cls, toml_data: Dict[str, Any]) -> "RerankerConfig":
-        """Custom TOML loading implementation for RerankerConfig."""
-        reranker_cfg = toml_data.get("reranker", {})
-        return cls(
-            registered_rerankers=toml_data.get("registered_rerankers", {}),
-            enable_reranker=reranker_cfg.get("enable_reranker", cls().enable_reranker),
-            reranker_provider=reranker_cfg.get("provider", cls().reranker_provider),
-            reranker_model=reranker_cfg.get("model", cls().reranker_model),
-        )
 
 
 @toml_config("sensory")
@@ -125,25 +95,84 @@ class SensoryConfig(BaseConfig):
     use_unstructured_api: bool = Field(default=False)
     use_contextual_chunking: bool = Field(default=False)
     contextual_chunking_model: str = Field(default="ollama_qwen_vision")
-
-    def get_toml_section(self) -> str:
-        return "sensory"
+    vision_model: str = Field(default="ollama_qwen_vision")
+    vision_frame_sample_rate: int = Field(default=120)
 
     @classmethod
-    def _from_toml(cls, toml_data: Dict[str, Any]) -> "SensoryConfig":
-        """Custom TOML loading implementation for SensoryConfig."""
-        parser_cfg = toml_data.get("sensory", {}).get("parser", {})
-        default_config = cls()
-        return cls(
-            chunk_size=_safe_int(parser_cfg.get("chunk_size"), default_config.chunk_size),
-            chunk_overlap=_safe_int(parser_cfg.get("chunk_overlap"), default_config.chunk_overlap),
-            use_unstructured_api=_safe_bool(
-                parser_cfg.get("use_unstructured_api"), default_config.use_unstructured_api
-            ),
-            use_contextual_chunking=_safe_bool(
-                parser_cfg.get("use_contextual_chunking"), default_config.use_contextual_chunking
-            ),
-            contextual_chunking_model=parser_cfg.get(
-                "contextual_chunking_model", default_config.contextual_chunking_model
-            ),
-        )
+    def _from_toml(cls, toml_data: Dict[str, Any], section_name: Optional[str] = None) -> "SensoryConfig":
+        parser_cfg = dict(toml_data.get("sensory", {}).get("parser", {}))
+        return cls(**parser_cfg)
+
+
+class CogentBaseConfig(BaseModel):
+    """Main configuration class that combines all module configurations."""
+
+    # Config registry for extensible submodule configs
+    registry: ConfigRegistry = Field(default_factory=ConfigRegistry)
+
+    def __init__(self, config_dir: Optional[Path] = None, **data):
+        super().__init__(**data)
+        self._load_default_configs()
+        self._load_dot_cogent_toml(config_dir=config_dir)
+
+    def _load_default_configs(self):
+        """Load default submodule configurations (class defaults)."""
+        self.registry.register("llm", LLMConfig())
+        self.registry.register("vector_store", VectorStoreConfig())
+        self.registry.register("reranker", RerankerConfig())
+        self.registry.register("sensory", SensoryConfig())
+
+    def _load_dot_cogent_toml(self, config_dir: Optional[Path] = None):
+        """Load user runtime configuration that can override package defaults."""
+        # Check for user runtime config in current working directory or provided config_dir
+        runtime_config_path = get_user_cogent_toml_path(config_dir)
+        toml_data = load_toml_config(runtime_config_path)
+        if toml_data:
+            self.registry.update_from_toml(toml_data)
+
+    def register_config(self, name: str, config: BaseConfig) -> None:
+        """Register a new submodule configuration."""
+        self.registry.register(name, config)
+
+    def get_config(self, name: str) -> Optional[BaseConfig]:
+        """Get a submodule configuration by name."""
+        return self.registry.get(name)
+
+    def get_all_configs(self) -> Dict[str, BaseConfig]:
+        """Get all registered submodule configurations."""
+        return self.registry.get_all()
+
+    # Convenience properties for backward compatibility
+    @property
+    def llm(self) -> LLMConfig:
+        """Get LLM configuration."""
+        return self.registry.get("llm")
+
+    @property
+    def vector_store(self) -> VectorStoreConfig:
+        """Get vector store configuration."""
+        return self.registry.get("vector_store")
+
+    @property
+    def reranker(self) -> RerankerConfig:
+        """Get reranker configuration."""
+        return self.registry.get("reranker")
+
+    @property
+    def sensory(self) -> SensoryConfig:
+        """Get sensory configuration."""
+        return self.registry.get("sensory")
+
+
+# Create global config instance
+config = CogentBaseConfig()
+
+
+def get_cogent_config() -> CogentBaseConfig:
+    """
+    Get the global configuration instance.
+
+    Returns:
+        CogentBaseConfig: The global configuration instance
+    """
+    return config

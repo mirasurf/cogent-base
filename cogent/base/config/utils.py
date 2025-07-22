@@ -4,9 +4,10 @@ Provides TOML loading and helper functions for configuration management.
 """
 
 import copy
+import os
 import tomllib
 from pathlib import Path
-from typing import Any, Dict, List, Mapping
+from typing import Any, Dict, List, Mapping, Optional
 
 
 def load_toml_config(toml_path: Path) -> Dict[str, Any]:
@@ -42,21 +43,11 @@ def load_merged_toml_configs(toml_paths: List[Path]) -> Dict[str, Any]:
     return merged_config
 
 
-def _safe_int(value: Any, default: int) -> int:
-    """Safely convert value to integer, falling back to default if conversion fails."""
-    try:
-        return int(value)
-    except (ValueError, TypeError):
-        return default
-
-
-def _safe_bool(value: Any, default: bool) -> bool:
-    """Safely convert value to boolean, falling back to default if conversion fails."""
-    if isinstance(value, bool):
-        return value
-    if isinstance(value, str):
-        return value.lower() in ("true", "1", "yes", "on")
-    try:
-        return bool(value)
-    except (ValueError, TypeError):
-        return default
+def get_user_cogent_toml_path(config_dir: Optional[Path] = None) -> Path:
+    """Get the path to the user's .cogent.toml file."""
+    if config_dir is not None:
+        return Path(config_dir) / ".cogent.toml"
+    cogent_config_env = os.environ.get("COGENT_CONFIG_DIR")
+    if cogent_config_env:
+        return Path(cogent_config_env) / ".cogent.toml"
+    return Path.cwd() / ".cogent.toml"

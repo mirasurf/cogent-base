@@ -1,70 +1,88 @@
-[project]
+[tool.poetry]
 name = "cogent-base"
-version = "0.1.10"
+version = "0.1.13"
 description = "Base and shared modules for cogents"
-authors = [
-    { name = "xmingc", email = "chenxm35@gmail.com" }
-]
+authors = ["xmingc <chenxm35@gmail.com>"]
 readme = "README.md"
-requires-python = ">=3.11"
-dependencies = [
-    "pydantic>=2.8.0",
-    "litellm>=1.74.0",
-    "ollama>=0.5.0",
-    "numpy<2.0.0",
-    "FlagEmbedding>=1.2.0",
-    "unstructured>=0.18.0",
-    "filetype>=1.2.0",
-    "opencv-python>=4.9.0",
-    "assemblyai>=0.21.0",
-    "weaviate-client>=4.15.0",
-    "instructor>=1.9.0",
-]
+packages = [{include = "cogent"}]
 
-[project.optional-dependencies]
-# Development dependencies
-dev = [
-    "pytest>=8.0.0",
-    "pytest-asyncio>=0.23.0",
-    "pytest-mock>=3.14.0",
-    "pytest-cov>=6.0.0",
-    "httpx>=0.28.0",
-    "black>=25.0.0",
-    "isort>=6.0.0",
-    "flake8>=7.0.0",
-    "autoflake>=2.3.1",
-]
+[tool.poetry.dependencies]
+python = ">=3.10,<3.12" # 3.11 is the maximum version for pandasai
+python-dotenv = ">=1.0.0"
+pydantic = ">=2.8.0"
+litellm = ">=1.74.0"
+ollama = ">=0.5.0"
+numpy = "<2.0.0"
+FlagEmbedding = ">=1.2.0"
+unstructured = ">=0.18.0"
+filetype = ">=1.2.0"
+opencv-python = ">=4.9.0"
+assemblyai = ">=0.21.0"
+weaviate-client = ">=4.15.0"
+instructor = ">=1.9.0"
+
+[tool.poetry.group.pandasai.dependencies]
+pandasai = ">=3.0.0b19"
+pandasai-openai = ">=0.1.4"
+openai = ">=1.50.0"
+plotly = ">=6.2.0"
+
+[tool.poetry.group.smartvoice.dependencies]
+aliyun-python-sdk-core = ">=2.13.1,<3.0.0"
+
+[tool.poetry.group.dev.dependencies]
+autoflake = ">=2.3.1"
+black = ">=25.0.0"
+build = ">=1.2.0"
+flake8 = ">=7.0.0"
+httpx = ">=0.28.0"
+isort = ">=6.0.0"
+mypy = ">=1.0.0"
+pytest = ">=8.0.0"
+pytest-asyncio = ">=0.23.0"
+pytest-cov = ">=6.0.0"
+pytest-mock = ">=3.14.0"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[tool.hatch.build.targets.wheel]
-packages = ["cogent"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]
-addopts = [
-    "-v",
-    "--strict-markers",
-    "--disable-warnings",
-]
-markers = [
-    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
-    "unit: marks tests as unit tests (deselect with '-m \"not unit\"')",
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "asyncio: marks tests as async tests",
-]
-asyncio_mode = "auto"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 120
 target-version = ['py311']
-include = '\.pyi?$'
 
 [tool.isort]
 profile = "black"
-multi_line_output = 3 
+line_length = 120
+
+[tool.mypy]
+python_version = "3.11"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+
+[[tool.mypy.overrides]]
+module = ["pytest.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.coverage.run]
+source = ["cogent"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "@(abc\\.)?abstractmethod",
+]

@@ -16,7 +16,6 @@ class ObjectChunk(BaseModel):
     # chunk-specific metadata
     metadata: Dict[str, Any] = Field(default_factory=dict)
     score: float = 0.0
-
     model_config = {"arbitrary_types_allowed": True}
 
 

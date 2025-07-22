@@ -18,7 +18,9 @@ class CompletionResponse(BaseModel):
 
 
 class CompletionRequest(BaseModel):
-    """Request for completion generation"""
+    """
+    Request for completion generation.
+    """
 
     query: str
     context_chunks: List[str]
@@ -31,3 +33,4 @@ class CompletionRequest(BaseModel):
     chat_history: Optional[List[ChatMessage]] = None
     stream_response: Optional[bool] = False
     llm_config: Optional[Dict[str, Any]] = None
+    model_kwargs: Optional[Dict[str, Any]] = None

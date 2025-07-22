@@ -1,0 +1,191 @@
+# Cogent Unified Configuration File
+# This file contains all main, provider, and sensory settings for the Cogent AI system
+
+# =============================================================================
+# REGISTERED MODELS SECTION
+# =============================================================================
+#
+# To declare a registered model, add a TOML table under [registered_models.<model_key>].
+# The <model_key> is a unique identifier you will use to reference this model in other config sections.
+#
+# Example:
+#   [registered_models.my_model]
+#   model_name = "gpt-4.1"                # (required) The provider's model name or ID
+#   api_base = "https://api.example.com" # (optional) Custom API endpoint for the provider
+#   api_key = "sk-..."                  # (optional) API key if not set via environment variable
+#   vision = true                      # (optional) Set to true if the model supports vision/multimodal
+#   deployment_id = "..."                  # (optional) For Azure/OpenAI deployments
+#   ... (other provider/model-specific fields)
+#
+# What are "other provider/model-specific fields"?
+# ------------------------------------------------
+# These are extra configuration options that may be required or supported by specific model providers (like OpenAI, Azure, DashScope, Ollama, etc.) or by particular models themselves. They are not universal—they depend on the API and features of the provider or model.
+#
+# Where do these fields come from?
+# - Provider API documentation: Each provider defines its own set of parameters for model invocation in their API docs.
+# - Cogent/LiteLLM integration: The Cogent system and underlying libraries (like LiteLLM) may support or require certain fields to properly route requests and enable advanced features.
+#
+# Common examples:
+#   api_base: Custom API endpoint (Azure, DashScope, Ollama, etc.)
+#   api_key: API key for authentication (if not set via environment variable)
+#   deployment_id: Azure OpenAI deployment name
+#   vision: Boolean flag for vision/multimodal support (Ollama, DashScope, etc.)
+#   api_version: API version for Azure or other providers
+#   temperature, top_p, etc.: Model tuning parameters (if supported)
+#
+# Always refer to the provider’s official API documentation and Cogent/LiteLLM docs for the full list of supported fields for your use case.
+#
+# You can then reference <model_key> in the [completion], [embedding], or other sections.
+[registered_models]
+
+# Ollama models (with ollama client)
+[registered_models.ollama_qwen_vision]
+model_name = "qwen2.5vl:latest"
+api_base = "http://localhost:11434"
+vision = true
+
+[registered_models.ollama_embedding]
+model_name = "nomic-embed-text:latest"
+api_base = "http://localhost:11434"
+
+# OpenAI models (with litellm)
+[registered_models.openai_gpt4-1]
+model_name = "gpt-4.1"
+
+[registered_models.openai_gpt4-1-mini]
+model_name = "gpt-4.1-mini"
+
+[registered_models.openai_embedding]
+model_name = "text-embedding-3-small"
+
+[registered_models.openai_embedding_large]
+model_name = "text-embedding-3-large"
+
+# Azure OpenAI models (with litellm)
+[registered_models.azure_gpt4]
+model_name = "gpt-4"
+api_base = "YOUR_AZURE_URL_HERE"
+api_version = "2023-05-15"
+deployment_id = "gpt-4-deployment"
+
+[registered_models.azure_gpt35]
+model_name = "gpt-3.5-turbo"
+api_base = "YOUR_AZURE_URL_HERE"
+api_version = "2023-05-15"
+deployment_id = "gpt-35-turbo-deployment"
+
+[registered_models.azure_embedding]
+model_name = "text-embedding-ada-002"
+api_base = "YOUR_AZURE_URL_HERE"
+api_version = "2023-05-15"
+deployment_id = "embedding-ada-002"
+
+# Anthropic Claude models (with litellm)
+[registered_models.claude_opus]
+model_name = "claude-opus-4-20250514"
+
+[registered_models.claude_sonnet]
+model_name = "claude-sonnet-4-20250514"
+
+# Google Gemini models (with litellm)
+[registered_models.gemini_flash]
+model_name = "gemini/gemini-2.5-flash-preview-05-20"
+
+# DashScope models (with litellm)
+[registered_models.dashscope_qwen_chat]
+model_name = "dashscope/qwen3-30b-a3b"
+api_base = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+enable_thinking = false
+
+[registered_models.dashscope_qwen_vision]
+model_name = "dashscope/qwen2.5-vl-32b-instruct"
+api_base = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+enable_thinking = false
+vision = true
+
+
+# =============================================================================
+# REGISTERED RERANKERS SECTION
+# =============================================================================
+[registered_rerankers]
+
+# Ollama models (with ollama client)
+[registered_rerankers.ollama_reranker]
+model_name = "linux6200/bge-reranker-v2-m3:latest"
+api_base = "http://localhost:11434"
+
+# Flag models (with flag)
+[registered_rerankers.flag_reranker]
+model_name = "BAAI/bge-reranker-v2-gemma"
+query_max_length = 256
+passage_max_length = 512
+use_fp16 = true
+device = "mps"
+
+# =============================================================================
+# REGISTERED VECTOR STORES SECTION
+# =============================================================================
+[registered_vector_stores]
+
+[registered_vector_stores.pgvector]
+dbname = "postgres"
+user = "postgres"
+password = "postgres"
+host = "localhost"
+port = 5432
+diskann = true
+hnsw = false
+
+[registered_vector_stores.weaviate]
+cluster_url = "http://localhost:8080"
+auth_client_secret = "secret"
+additional_headers = {}
+
+# =============================================================================
+# COMPLETION SETTINGS
+# =============================================================================
+[completion]
+provider = "ollama"
+model = "ollama_qwen_vision"
+default_max_tokens = 5000
+default_temperature = 0.3
+
+# =============================================================================
+# EMBEDDING SETTINGS
+# =============================================================================
+[embedding]
+provider = "ollama"
+model = "ollama_embedding"
+dimensions = 768
+similarity_metric = "cosine"
+
+# =============================================================================
+# RERANKER SETTINGS
+# =============================================================================
+[reranker]
+enable_reranker = false
+provider = "ollama"
+model = "ollama_reranker"
+
+# =============================================================================
+# VECTOR STORE SETTINGS
+# =============================================================================
+[vector_store]
+provider = "pgvector"
+store = "pgvector"
+collection_name = "cogent"
+embedding_model_dims = 768
+
+# =============================================================================
+# SENSORY SETTINGS
+# =============================================================================
+[sensory]
+
+[sensory.parser]
+chunk_size = 6000
+chunk_overlap = 300
+use_unstructured_api = false
+use_contextual_chunking = false
+contextual_chunking_model = "ollama_qwen_vision"
+vision_model = "ollama_qwen_vision"
+vision_frame_sample_rate = 120

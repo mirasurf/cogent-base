@@ -66,7 +66,7 @@ class CogentParser(BaseParser):
             temp_file.close()
             video_path = temp_file.name
 
-            # Load the config to get the frame_sample_rate from cogent.base.toml
+            # Load the config to get the frame_sample_rate from .cogent.toml
             config = get_cogent_config()
             parser_config = config.get("parser", {})
             vision_config = parser_config.get("vision", {})
