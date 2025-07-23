@@ -16,7 +16,6 @@ def load_toml_config(toml_path: Path) -> Dict[str, Any]:
         with open(toml_path, "rb") as f:
             return tomllib.load(f)
     except FileNotFoundError:
-        print(f"Warning: TOML config file not found at {toml_path}")
         return {}
     except Exception as e:
         print(f"Error loading TOML config: {e}")

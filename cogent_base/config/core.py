@@ -164,15 +164,48 @@ class CogentBaseConfig(BaseModel):
         return self.registry.get("sensory")
 
 
-# Create global config instance
-config = CogentBaseConfig()
+# Global config instance
+_config: Optional[CogentBaseConfig] = None
 
 
 def get_cogent_config() -> CogentBaseConfig:
     """
     Get the global configuration instance.
 
+    If no config has been initialized, creates one with default settings.
+
     Returns:
         CogentBaseConfig: The global configuration instance
     """
-    return config
+    global _config
+    if _config is None:
+        _config = CogentBaseConfig()
+    return _config
+
+
+def set_cogent_config_dir(config_dir: Path) -> None:
+    """
+    Set the configuration directory and reinitialize the global config.
+
+    This will reload the configuration from the specified directory.
+
+    Args:
+        config_dir: Path to the directory containing .cogent.toml
+    """
+    global _config
+    _config = CogentBaseConfig(config_dir=config_dir)
+
+
+def init_cogent_config(config_dir: Optional[Path] = None) -> CogentBaseConfig:
+    """
+    Initialize the global configuration with optional config directory.
+
+    Args:
+        config_dir: Optional path to the directory containing .cogent.toml
+
+    Returns:
+        CogentBaseConfig: The initialized configuration instance
+    """
+    global _config
+    _config = CogentBaseConfig(config_dir=config_dir)
+    return _config
