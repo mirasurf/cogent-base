@@ -18,6 +18,10 @@ ollama = ">=0.5.0"
 # sensory
 unstructured = ">=0.18.0"
 filetype = ">=1.2.0"
+opencv-python = ">=4.9.0"
+
+[tool.poetry.group.extensions]
+optional = true
 
 [tool.poetry.group.extensions.dependencies]
 # vector store
@@ -25,7 +29,6 @@ weaviate-client = ">=4.15.0"
 # embedding
 FlagEmbedding = ">=1.2.0"
 # video parser
-opencv-python = ">=4.9.0"
 assemblyai = ">=0.21.0"
 # pandasai
 pandasai = ">=3.0.0b19"

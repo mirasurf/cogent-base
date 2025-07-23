@@ -22,6 +22,20 @@ A shared Python module for agentic cognitive computing frameworks, providing ext
 pip install cogent-base
 ```
 
+To use advanced vendor's features, install with
+
+```bash
+pip install cogent-base[extensions]
+```
+
+to enable features:
+
+- vector stores of weaviate
+- FlagEmbedding
+- video parser with assemblyai
+- smart frame with pandasai
+- smart voice with ailyun lingjie NLS
+
 For development:
 
 ```bash

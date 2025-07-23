@@ -3263,7 +3263,7 @@ version = "4.11.0.86"
 description = "Wrapper package for OpenCV python bindings."
 optional = false
 python-versions = ">=3.6"
-groups = ["extensions"]
+groups = ["main"]
 files = [
     {file = "opencv-python-4.11.0.86.tar.gz", hash = "sha256:03d60ccae62304860d232272e4a4fda93c39d595780cb40b161b310244b736a4"},
     {file = "opencv_python-4.11.0.86-cp37-abi3-macosx_13_0_arm64.whl", hash = "sha256:432f67c223f1dc2824f5e73cdfcd9db0efc8710647d4e813012195dc9122a52a"},
@@ -6190,4 +6190,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.12"
-content-hash = "b0e6d8ba092d874bfa9913e46174c872644e54098241574c4cea3050977a47ec"
+content-hash = "57db316050d0f273f0330f8d20cfaff9b3078527cd21dfff579f9b065aec3e46"
