@@ -80,6 +80,10 @@ vector_store_config = config.vector_store
 - **Document Parsing**: Multi-format document text extraction
 - **Text Chunking**: Configurable text splitting with overlap
 
+### Smart Processing
+- **Smart DataFrame**: dataframe talks to LLM with pandasai
+- **Smart Voice**: voice-to-text transcription based on Aliyun Lingji AI.
+
 ## License
 
 MIT

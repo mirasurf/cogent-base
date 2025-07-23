@@ -4,7 +4,7 @@
 PYTHON = python3
 POETRY = poetry
 PYTEST = pytest
-PYTHON_MODULES = cogent_base tests
+PYTHON_MODULES = cogent_base tests examples
 SRC_DIR = cogent_base
 TEST_DIR = tests
 LINE_LENGTH = 120
@@ -94,9 +94,14 @@ format-check: ## Check if code is properly formatted
 
 lint: ## Lint code
 	@echo "$(BLUE)🔍 Running linters...$(RESET)"
-	@$(POETRY) run flake8 --max-line-length=$(LINE_LENGTH) --extend-ignore=E203,W503 $(PYTHON_MODULES)
+	@$(POETRY) run flake8 --max-line-length=$(LINE_LENGTH) --extend-ignore=E203,W503,W293 $(PYTHON_MODULES)
 
-lint-fix: ## Auto-fix linting issues where possible
+whitespace-fix: ## Fix whitespace issues (W291 only)
+	@echo "$(BLUE)🧹 Fixing trailing whitespace issues...$(RESET)"
+	@find $(PYTHON_MODULES) -name "*.py" -type f -exec sed -i '' 's/[[:space:]]*$$//' {} \;
+	@echo "$(GREEN)✅ Trailing whitespace issues fixed!$(RESET)"
+
+lint-fix: whitespace-fix ## Auto-fix linting issues where possible
 	@echo "$(BLUE)🔧 Auto-fixing linting issues...$(RESET)"
 	@$(POETRY) run autoflake --in-place --recursive --remove-all-unused-imports --remove-unused-variables $(PYTHON_MODULES)
 

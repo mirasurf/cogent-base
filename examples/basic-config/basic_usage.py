@@ -14,5 +14,6 @@ config = get_cogent_config()
 llm_config = config.llm
 vector_store_config = config.vector_store
 
-print(f"LLM Model: {llm_config.model}")
+print(f"Completion Model: {llm_config.completion_model}")
+print(f"Embedding Model: {llm_config.embedding_model}")
 print(f"Vector Store Type: {vector_store_config.provider}")
