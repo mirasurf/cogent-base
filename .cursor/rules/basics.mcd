@@ -1,0 +1,21 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+You're working on **cogent-base**—a shared and common module to build multi-agent system.
+
+## GENERAL RULES
+
+- Always DO NOT change unrelated parts beyond user requirements.
+
+## DEV CONSIDERATIONS
+
+- After generation, always make sure the code format and linting are performed well. use `make format`, `make autofix`, and finally pass `make quality`.
+- Always make sure the existing unittests and integration tests are passed.
+- Always perfer modularized design for each module.
+- Always declared contants value modules to contain magic values. DO NOT treat error messages as constants.
+- DO NOT declare magic values used in multiple positions. Declare constant values instead.
+- Always manage python project with `pyproject.toml`
+- Always run local commands prefixed by `poetry run`, since we use venv managed by poetry.
